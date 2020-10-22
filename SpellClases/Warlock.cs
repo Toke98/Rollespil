@@ -7,6 +7,7 @@ namespace Rollespil.SpellClases
     public class Warlock
     {
         public static double HitDie = 8; 
+        // random cmment
 
         public static int[] Cantrips = { 1, 2, 4, 7, 9, 10, 14, 15, 19, 21, 22, 33, 34 };
         //1
