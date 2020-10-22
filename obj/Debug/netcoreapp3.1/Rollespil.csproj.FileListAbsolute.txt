@@ -1,0 +1,13 @@
+C:\Users\tokek\source\repos\Rollespil\Rollespil\bin\Debug\netcoreapp3.1\Rollespil.exe
+C:\Users\tokek\source\repos\Rollespil\Rollespil\bin\Debug\netcoreapp3.1\Rollespil.deps.json
+C:\Users\tokek\source\repos\Rollespil\Rollespil\bin\Debug\netcoreapp3.1\Rollespil.runtimeconfig.json
+C:\Users\tokek\source\repos\Rollespil\Rollespil\bin\Debug\netcoreapp3.1\Rollespil.runtimeconfig.dev.json
+C:\Users\tokek\source\repos\Rollespil\Rollespil\bin\Debug\netcoreapp3.1\Rollespil.dll
+C:\Users\tokek\source\repos\Rollespil\Rollespil\bin\Debug\netcoreapp3.1\Rollespil.pdb
+C:\Users\tokek\source\repos\Rollespil\Rollespil\obj\Debug\netcoreapp3.1\Rollespil.csprojAssemblyReference.cache
+C:\Users\tokek\source\repos\Rollespil\Rollespil\obj\Debug\netcoreapp3.1\Rollespil.AssemblyInfoInputs.cache
+C:\Users\tokek\source\repos\Rollespil\Rollespil\obj\Debug\netcoreapp3.1\Rollespil.AssemblyInfo.cs
+C:\Users\tokek\source\repos\Rollespil\Rollespil\obj\Debug\netcoreapp3.1\Rollespil.csproj.CoreCompileInputs.cache
+C:\Users\tokek\source\repos\Rollespil\Rollespil\obj\Debug\netcoreapp3.1\Rollespil.dll
+C:\Users\tokek\source\repos\Rollespil\Rollespil\obj\Debug\netcoreapp3.1\Rollespil.pdb
+C:\Users\tokek\source\repos\Rollespil\Rollespil\obj\Debug\netcoreapp3.1\Rollespil.genruntimeconfig.cache
