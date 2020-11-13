@@ -4,6 +4,7 @@ using Rollespil.SpellClases;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks.Dataflow;
@@ -20,7 +21,7 @@ namespace Rollespil
         //Technecal stuff
         public static ConsoleKeyInfo Exit;
         public static Random rng = new Random();
-        public static string makeShiftString;
+        public static string makeShiftString ="";
 
         //Character
 
@@ -36,7 +37,7 @@ namespace Rollespil
         public static int numberOfSpells = 0;
         public static int NumberOfCantrips = 0;
         public static int newSpells;
-        public static int Initiative;
+        public static int Initiative = 0;
         public static int spellSlots;
         public static int trueSpellSlot;
         public static int WalkingSpeed;
@@ -58,13 +59,6 @@ namespace Rollespil
         public static int numberOfRolls;
         public static int totalDieResult;
 
-        public static List<double> Position = new List<double>();
-        public static List<double> Expected = new List<double>();
-        public static List<double> Observed = new List<double>();
-        public static List<double> OE = new List<double>();
-        public static List<double> OELifted = new List<double>();
-        public static List<double> OELiftedAndDivided = new List<double>();
-
         public static bool advantageOrNot = false;
         public static bool disadvantageOrNot = false;
 
@@ -80,13 +74,21 @@ namespace Rollespil
         //Warlock
         public static bool warlockOrNot = false;
         public static bool[] Arcadium = { false, false, false, false };
+        public static string[] Arcanum = { "", "", "", "" };
 
 
-        //Combat
+        ///Combat
+        public static bool combat = false;
+
+        public static int combatCounter;
         public static int DamageDone = 0;
         public static int DeathDie;
         public static int LifeDie;
         public static int DeathCounter;
+
+        public static bool spellConcentraition = false;
+        public static int spellBreak;
+        public static int concentraitionCounter;
 
         public static double DeathThreasHold = 0;
 
@@ -102,41 +104,19 @@ namespace Rollespil
 
         public static List<string> Spells = new List<string>();
 
+
         ///Weapons
         public static string searchTool;
 
-        //Damage type
-        public static int searchIntBlud;
-        public static int searchFire;
-        public static int searchNec;
-        public static int searchPier;
-        public static int searchRadiant;
-        public static int searchSlash;
+        //Your weapon
+        public static int yourWeapon = -1;
+        public static int weaponDamageDealt;
+        public static int toHit;
+        public static int attackRoll;
 
-        //Range
-        public static int Melee;
-        public static int Ranged;
+        public static bool weaponPro = false;
+        public static bool rangedWeapon = false;
 
-        //Properties
-        public static int Ammu;
-        public static int Burst;
-        public static int Expl;
-        public static int Fine;
-        public static int Heavy;
-        public static int Light;
-        public static int Load;
-        public static int Mis;
-        public static int Reach;
-        public static int Re;
-        public static int Special;
-        public static int Thrown;
-        public static int Two;
-        public static int Ver;
-
-        //Complexity
-        public static int searchMartial;
-        public static int searchSimple;
-        public static int searchFirearms;
 
         //Classes and Races
         public static string[] Classess = { "Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard" };
@@ -734,233 +714,242 @@ namespace Rollespil
                 Console.WriteLine();
 
                 //Spells known
-                if (12 > Level)
                 {
-                    SpellsKnown++;
-                    for (int i = 0; i < Level; i++)
+                    if (12 > Level)
                     {
                         SpellsKnown++;
+                        for (int i = 0; i < Level; i++)
+                        {
+                            SpellsKnown++;
+                        }
+                    }
+
+                    if (Level == 12)
+                    {
+                        SpellsKnown = 12;
+                    }
+
+                    if (12 < Level && 17 > Level)
+                    {
+                        for (int i = 10; i < Level; i = i + 2)
+                        {
+                            SpellsKnown = i - 1;
+                        }
+                    }
+
+                    if (Level > 16)
+                    {
+                        SpellsKnown = 15;
                     }
                 }
 
-                if (Level == 12)
+                ///What Spells you can lern
                 {
-                    SpellsKnown = 12;
-                }
-
-                if (12 < Level && 17 > Level)
-                {
-                    for (int i = 10; i < Level; i = i + 2)
+                    //Cantrips
                     {
-                        SpellsKnown = i - 1;
-                    }
-                }
-
-                if (Level > 16)
-                {
-                    SpellsKnown = 15;
-                }
-
-                //What Spells you can lern
-                Console.WriteLine("Please enter your " + NumberOfCantrips + " cantrips:");
-                Spells.Add("Cantrips: ");
-                for (int ii = 1; ii <= NumberOfCantrips; ii++)
-                {
-                    YourSpells = Console.ReadLine();
-                    if (YourSpells != "skip")
-                    {
+                        Console.WriteLine("Please enter your " + NumberOfCantrips + " cantrips:");
+                        Spells.Add("Cantrips: ");
+                        for (int ii = 1; ii <= NumberOfCantrips; ii++)
+                        {
+                            YourSpells = Console.ReadLine();
+                            if (YourSpells != "skip")
+                            {
+                                Spells.Add(YourSpells);
+                            }
+                        }
+                        YourSpells = "";
                         Spells.Add(YourSpells);
                     }
-                }
-                YourSpells = "";
-                Spells.Add(YourSpells);
 
-                Console.WriteLine();
-                Console.WriteLine("Please enter your Spells");
-                Console.WriteLine();
-                counter = 0;
+                    Console.WriteLine();
+                    Console.WriteLine("Please enter your Spells");
+                    Console.WriteLine();
+                    counter = 0;
 
-                //spell slots for level 1
-                Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
-                Spells.Add(allSpellLevels[counter]);
-                Console.WriteLine();
-                for (int i = 1; i <= levelSpellSlots[counter]; i++)
-                {
-                    if (YourSpells != "skip")
+                    //spell slots for level 1
                     {
-                        YourSpells = Console.ReadLine();
-                    }
+                        Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
+                        Spells.Add(allSpellLevels[counter]);
+                        Console.WriteLine();
+                        for (int i = 1; i <= levelSpellSlots[counter]; i++)
+                        {
+                            if (YourSpells != "skip")
+                            {
+                                YourSpells = Console.ReadLine();
+                            }
 
-                    if (YourSpells != "skip")
-                    {
+                            if (YourSpells != "skip")
+                            {
+                                Spells.Add(YourSpells);
+                            }
+                        }
+
+                        YourSpells = "";
                         Spells.Add(YourSpells);
+                        Console.WriteLine();
+                        counter++;
                     }
-                }
 
-                YourSpells = "";
-                Spells.Add(YourSpells);
-                Console.WriteLine();
-                counter++;
-
-                //spell slots for level 2
-                if (Level > 2)
-                {
-                    Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
-                    Spells.Add(allSpellLevels[counter]);
-                    Console.WriteLine();
-                    for (int i = 1; i <= levelSpellSlots[counter]; i++)
+                    //spell slots for level 2
+                    if (Level > 2)
                     {
-                        YourSpells = Console.ReadLine();
-                        if (YourSpells != "skip")
+                        Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
+                        Spells.Add(allSpellLevels[counter]);
+                        Console.WriteLine();
+                        for (int i = 1; i <= levelSpellSlots[counter]; i++)
                         {
-                            Spells.Add(YourSpells);
+                            YourSpells = Console.ReadLine();
+                            if (YourSpells != "skip")
+                            {
+                                Spells.Add(YourSpells);
+                            }
                         }
+
+                        YourSpells = "";
+                        Spells.Add(YourSpells);
+                        Console.WriteLine();
+                        counter++;
                     }
 
-                    YourSpells = "";
-                    Spells.Add(YourSpells);
-                    Console.WriteLine();
-                    counter++;
-                }
-
-                //spell slots for level 3
-                if (Level > 4)
-                {
-                    Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
-                    Spells.Add(allSpellLevels[counter]);
-                    Console.WriteLine();
-                    for (int i = 1; i <= levelSpellSlots[counter]; i++)
+                    //spell slots for level 3
+                    if (Level > 4)
                     {
-                        YourSpells = Console.ReadLine();
-                        if (YourSpells != "skip")
+                        Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
+                        Spells.Add(allSpellLevels[counter]);
+                        Console.WriteLine();
+                        for (int i = 1; i <= levelSpellSlots[counter]; i++)
                         {
-                            Spells.Add(YourSpells);
+                            YourSpells = Console.ReadLine();
+                            if (YourSpells != "skip")
+                            {
+                                Spells.Add(YourSpells);
+                            }
                         }
+                        YourSpells = "";
+                        Spells.Add(YourSpells);
+                        Console.WriteLine();
+                        counter++;
                     }
-                    YourSpells = "";
-                    Spells.Add(YourSpells);
-                    Console.WriteLine();
-                    counter++;
-                }
 
-                //spell slots for level 4
-                if (Level > 6)
-                {
-                    Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
-                    Spells.Add(allSpellLevels[counter]);
-                    Console.WriteLine();
-                    for (int i = 1; i <= levelSpellSlots[counter]; i++)
+                    //spell slots for level 4
+                    if (Level > 6)
                     {
-                        YourSpells = Console.ReadLine();
-                        if (YourSpells != "skip")
+                        Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
+                        Spells.Add(allSpellLevels[counter]);
+                        Console.WriteLine();
+                        for (int i = 1; i <= levelSpellSlots[counter]; i++)
                         {
-                            Spells.Add(YourSpells);
+                            YourSpells = Console.ReadLine();
+                            if (YourSpells != "skip")
+                            {
+                                Spells.Add(YourSpells);
+                            }
                         }
+                        YourSpells = "";
+                        Spells.Add(YourSpells);
+                        Console.WriteLine();
+                        counter++;
                     }
-                    YourSpells = "";
-                    Spells.Add(YourSpells);
-                    Console.WriteLine();
-                    counter++;
-                }
 
-                //spell slots for level 5
-                if (Level > 8)
-                {
-                    Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
-                    Spells.Add(allSpellLevels[counter]);
-                    Console.WriteLine();
-                    for (int i = 1; i <= levelSpellSlots[counter]; i++)
+                    //spell slots for level 5
+                    if (Level > 8)
                     {
-                        YourSpells = Console.ReadLine();
-                        if (YourSpells != "skip")
+                        Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
+                        Spells.Add(allSpellLevels[counter]);
+                        Console.WriteLine();
+                        for (int i = 1; i <= levelSpellSlots[counter]; i++)
                         {
-                            Spells.Add(YourSpells);
+                            YourSpells = Console.ReadLine();
+                            if (YourSpells != "skip")
+                            {
+                                Spells.Add(YourSpells);
+                            }
                         }
+                        YourSpells = "";
+                        Spells.Add(YourSpells);
+                        Console.WriteLine();
+                        counter++;
                     }
-                    YourSpells = "";
-                    Spells.Add(YourSpells);
-                    Console.WriteLine();
-                    counter++;
-                }
 
-                //spell slots for level 6
-                if (Level > 10)
-                {
-                    Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
-                    Spells.Add(allSpellLevels[counter]);
-                    Console.WriteLine();
-                    for (int i = 1; i <= levelSpellSlots[counter]; i++)
+                    //spell slots for level 6
+                    if (Level > 10)
                     {
-                        YourSpells = Console.ReadLine();
-                        if (YourSpells != "skip")
+                        Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
+                        Spells.Add(allSpellLevels[counter]);
+                        Console.WriteLine();
+                        for (int i = 1; i <= levelSpellSlots[counter]; i++)
                         {
-                            Spells.Add(YourSpells);
+                            YourSpells = Console.ReadLine();
+                            if (YourSpells != "skip")
+                            {
+                                Spells.Add(YourSpells);
+                            }
                         }
+                        YourSpells = "";
+                        Spells.Add(YourSpells);
+                        Console.WriteLine();
+                        counter++;
                     }
-                    YourSpells = "";
-                    Spells.Add(YourSpells);
-                    Console.WriteLine();
-                    counter++;
-                }
 
-                //spell slots for level 7
-                if (Level > 12)
-                {
-                    Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
-                    Spells.Add(allSpellLevels[counter]);
-                    Console.WriteLine();
-                    for (int i = 1; i <= levelSpellSlots[counter]; i++)
+                    //spell slots for level 7
+                    if (Level > 12)
                     {
-                        YourSpells = Console.ReadLine();
-                        if (YourSpells != "skip")
+                        Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
+                        Spells.Add(allSpellLevels[counter]);
+                        Console.WriteLine();
+                        for (int i = 1; i <= levelSpellSlots[counter]; i++)
                         {
-                            Spells.Add(YourSpells);
+                            YourSpells = Console.ReadLine();
+                            if (YourSpells != "skip")
+                            {
+                                Spells.Add(YourSpells);
+                            }
                         }
+                        YourSpells = "";
+                        Spells.Add(YourSpells);
+                        Console.WriteLine();
+                        counter++;
                     }
-                    YourSpells = "";
-                    Spells.Add(YourSpells);
-                    Console.WriteLine();
-                    counter++;
-                }
 
-                //spell slots for level 8
-                if (Level > 14)
-                {
-                    Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
-                    Spells.Add(allSpellLevels[counter]);
-                    Console.WriteLine();
-                    for (int i = 1; i <= levelSpellSlots[counter]; i++)
+                    //spell slots for level 8
+                    if (Level > 14)
                     {
-                        YourSpells = Console.ReadLine();
-                        if (YourSpells != "skip")
+                        Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
+                        Spells.Add(allSpellLevels[counter]);
+                        Console.WriteLine();
+                        for (int i = 1; i <= levelSpellSlots[counter]; i++)
                         {
-                            Spells.Add(YourSpells);
+                            YourSpells = Console.ReadLine();
+                            if (YourSpells != "skip")
+                            {
+                                Spells.Add(YourSpells);
+                            }
                         }
+                        YourSpells = "";
+                        Spells.Add(YourSpells);
+                        Console.WriteLine();
+                        counter++;
                     }
-                    YourSpells = "";
-                    Spells.Add(YourSpells);
-                    Console.WriteLine();
-                    counter++;
-                }
 
-                //spell slots for level 9
-                if (Level > 16)
-                {
-                    Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
-                    Spells.Add(allSpellLevels[counter]);
-                    Console.WriteLine();
-                    for (int i = 1; i <= levelSpellSlots[counter]; i++)
+                    //spell slots for level 9
+                    if (Level > 16)
                     {
-                        YourSpells = Console.ReadLine();
-                        if (YourSpells != "skip")
+                        Console.WriteLine("Please enter all of your " + allSpellLevels[counter] + "(" + levelSpellSlots[counter] + ")");
+                        Spells.Add(allSpellLevels[counter]);
+                        Console.WriteLine();
+                        for (int i = 1; i <= levelSpellSlots[counter]; i++)
                         {
-                            Spells.Add(YourSpells);
+                            YourSpells = Console.ReadLine();
+                            if (YourSpells != "skip")
+                            {
+                                Spells.Add(YourSpells);
+                            }
                         }
+                        YourSpells = "";
+                        Spells.Add(YourSpells);
+                        Console.WriteLine();
+                        counter++;
                     }
-                    YourSpells = "";
-                    Spells.Add(YourSpells);
-                    Console.WriteLine();
-                    counter++;
                 }
             }
 
@@ -1002,170 +991,175 @@ namespace Rollespil
             SpellSacveDC = (8 + ProficiencyBonus + Modifier[5]);
             SpellcastingAbility = Modifier[5];
 
-
-            //Cantrips known
+            //Manual
             {
-                if (Level < 3)
+                if (name != "Rando")
                 {
-                    NumberOfCantrips = 2;
-                }
-
-                if (Level > 3 && 10 > Level)
-                {
-                    NumberOfCantrips = 3;
-                }
-
-                if (Level > 9)
-                {
-                    NumberOfCantrips = 4;
-                }
-            }
-
-            //Spells from Your Level
-            {
-                for (int a = 0; a <= Level; a++)
-                {
-                    if (Level < 9)
+                    //Cantrips known
                     {
-                        numberOfSpells = (numberOfSpells + 1);
-                    }
-
-                    if (Level == 10)
-                    {
-                        numberOfSpells = 10;
-                    }
-
-                    if (Level > 8 && Level != 10)
-                    {
-                        numberOfSpells = 9;
-                        for (int b = 10; b <= Level; b = b + 2)
+                        if (Level < 3)
                         {
-                            numberOfSpells = (b - 1);
+                            NumberOfCantrips = 2;
+                        }
+
+                        if (Level > 3 && 10 > Level)
+                        {
+                            NumberOfCantrips = 3;
+                        }
+
+                        if (Level > 9)
+                        {
+                            NumberOfCantrips = 4;
                         }
                     }
-                }
 
-                Console.WriteLine();
-                Console.WriteLine(numberOfSpells);
-                Console.WriteLine();
-
-                //Invications
-                if (Level > 1)
-                {
-                    Console.WriteLine("All Invocations:");
-                    Console.WriteLine();
-                    foreach (string Invocation in Warlock.Invocations)
+                    //Spells from Your Level
                     {
-                        Console.Write(Invocation);
-                    }
-                    Console.WriteLine();
-                }
-
-                //What Spells you can lern
-                Console.WriteLine("All Warlock Cantrips:");
-                Console.WriteLine();
-
-                if (Level > 0)
-                {
-                    foreach (int Cantrips in Warlock.Cantrips)
-                    {
-                        Console.WriteLine(SpellList.Cantrips[Cantrips]);
-                    }
-                    Console.WriteLine();
-
-                    Console.WriteLine("All 1'st Level Warlock Spells:");
-                    Console.WriteLine();
-
-                    foreach (int Spell in Warlock.Level1Spells)
-                    {
-                        Console.WriteLine(SpellList.Level1Spells[Spell]);
-                    }
-                    Console.WriteLine();
-
-                    if (2 < Level)
-                    {
-                        Console.WriteLine("All 2'nd Level Warlock Spells:");
-                        Console.WriteLine();
-
-                        foreach (int Spell in Warlock.Level2Spells)
+                        for (int a = 0; a <= Level; a++)
                         {
-                            Console.WriteLine(SpellList.Level2Spells[Spell]);
-                        }
-                        Console.WriteLine();
-
-                        if (4 < Level)
-                        {
-                            Console.WriteLine("All 3'rd Level Warlock Spells:");
-                            Console.WriteLine();
-
-                            foreach (int Spell in Warlock.Level3Spells)
+                            if (Level < 9)
                             {
-                                Console.WriteLine(SpellList.Level3Spells[Spell]);
+                                numberOfSpells = (numberOfSpells + 1);
+                            }
+
+                            if (Level == 10)
+                            {
+                                numberOfSpells = 10;
+                            }
+
+                            if (Level > 8 && Level != 10)
+                            {
+                                numberOfSpells = 9;
+                                for (int b = 10; b <= Level; b = b + 2)
+                                {
+                                    numberOfSpells = (b - 1);
+                                }
+                            }
+                        }
+
+                        Console.WriteLine();
+                        Console.WriteLine(numberOfSpells);
+                        Console.WriteLine();
+
+                        //Invications
+                        if (Level > 1)
+                        {
+                            Console.WriteLine("All Invocations:");
+                            Console.WriteLine();
+                            foreach (string Invocation in Warlock.Invocations)
+                            {
+                                Console.Write(Invocation);
+                            }
+                            Console.WriteLine();
+                        }
+
+                        //What Spells you can lern
+                        Console.WriteLine("All Warlock Cantrips:");
+                        Console.WriteLine();
+
+                        if (Level > 0)
+                        {
+                            foreach (int Cantrips in Warlock.Cantrips)
+                            {
+                                Console.WriteLine(SpellList.Cantrips[Cantrips]);
                             }
                             Console.WriteLine();
 
-                            if (6 < Level)
+                            Console.WriteLine("All 1'st Level Warlock Spells:");
+                            Console.WriteLine();
+
+                            foreach (int Spell in Warlock.Level1Spells)
                             {
-                                Console.WriteLine("All 4'th Level Warlock Spells:");
+                                Console.WriteLine(SpellList.Level1Spells[Spell]);
+                            }
+                            Console.WriteLine();
+
+                            if (2 < Level)
+                            {
+                                Console.WriteLine("All 2'nd Level Warlock Spells:");
                                 Console.WriteLine();
 
-                                foreach (int Spell in Warlock.Level4Spells)
+                                foreach (int Spell in Warlock.Level2Spells)
                                 {
-                                    Console.WriteLine(SpellList.Level4Spells[Spell]);
+                                    Console.WriteLine(SpellList.Level2Spells[Spell]);
                                 }
                                 Console.WriteLine();
 
-                                if (8 < Level)
+                                if (4 < Level)
                                 {
-                                    Console.WriteLine("All 5'th Level Warlock Spells:");
+                                    Console.WriteLine("All 3'rd Level Warlock Spells:");
                                     Console.WriteLine();
 
-                                    foreach (int Spell in Warlock.Level5Spells)
+                                    foreach (int Spell in Warlock.Level3Spells)
                                     {
-                                        Console.WriteLine(SpellList.Level5Spells[Spell]);
+                                        Console.WriteLine(SpellList.Level3Spells[Spell]);
                                     }
                                     Console.WriteLine();
 
-                                    if (10 < Level)
+                                    if (6 < Level)
                                     {
-                                        Console.WriteLine("All 6'th Level Warlock Spells:");
+                                        Console.WriteLine("All 4'th Level Warlock Spells:");
                                         Console.WriteLine();
 
-                                        foreach (int Spell in Warlock.Level6Spells)
+                                        foreach (int Spell in Warlock.Level4Spells)
                                         {
-                                            Console.WriteLine(SpellList.Level6Spells[Spell]);
+                                            Console.WriteLine(SpellList.Level4Spells[Spell]);
                                         }
                                         Console.WriteLine();
 
-                                        if (12 < Level)
+                                        if (8 < Level)
                                         {
-                                            Console.WriteLine("All 7'th Level Warlock Spells:");
+                                            Console.WriteLine("All 5'th Level Warlock Spells:");
                                             Console.WriteLine();
 
-                                            foreach (int Spell in Warlock.Level7Spells)
+                                            foreach (int Spell in Warlock.Level5Spells)
                                             {
-                                                Console.WriteLine(SpellList.Level7Spells[Spell]);
+                                                Console.WriteLine(SpellList.Level5Spells[Spell]);
                                             }
                                             Console.WriteLine();
 
-                                            if (14 < Level)
+                                            if (10 < Level)
                                             {
-                                                Console.WriteLine("All 8'th Level Warlock Spells:");
+                                                Console.WriteLine("All 6'th Level Warlock Spells:");
                                                 Console.WriteLine();
 
-                                                foreach (int Spell in Warlock.Level8Spells)
+                                                foreach (int Spell in Warlock.Level6Spells)
                                                 {
-                                                    Console.WriteLine(SpellList.Level8Spells[Spell]);
+                                                    Console.WriteLine(SpellList.Level6Spells[Spell]);
                                                 }
                                                 Console.WriteLine();
-                                                if (16 < Level)
+
+                                                if (12 < Level)
                                                 {
-                                                    Console.WriteLine("All 9'th Level Warlock Spells:");
+                                                    Console.WriteLine("All 7'th Level Warlock Spells:");
                                                     Console.WriteLine();
 
-                                                    foreach (int Spell in Warlock.Level9Spells)
+                                                    foreach (int Spell in Warlock.Level7Spells)
                                                     {
-                                                        Console.WriteLine(SpellList.Level9Spells[Spell]);
+                                                        Console.WriteLine(SpellList.Level7Spells[Spell]);
+                                                    }
+                                                    Console.WriteLine();
+
+                                                    if (14 < Level)
+                                                    {
+                                                        Console.WriteLine("All 8'th Level Warlock Spells:");
+                                                        Console.WriteLine();
+
+                                                        foreach (int Spell in Warlock.Level8Spells)
+                                                        {
+                                                            Console.WriteLine(SpellList.Level8Spells[Spell]);
+                                                        }
+                                                        Console.WriteLine();
+                                                        if (16 < Level)
+                                                        {
+                                                            Console.WriteLine("All 9'th Level Warlock Spells:");
+                                                            Console.WriteLine();
+
+                                                            foreach (int Spell in Warlock.Level9Spells)
+                                                            {
+                                                                Console.WriteLine(SpellList.Level9Spells[Spell]);
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
@@ -1175,91 +1169,522 @@ namespace Rollespil
                             }
                         }
                     }
+
+                    Console.WriteLine("Please enter your cantrips " + NumberOfCantrips + " Spells");
+                    Spells.Add("Cantrips:");
+                    for (int ii = 1; ii <= NumberOfCantrips; ii++)
+                    {
+                        YourSpells = Console.ReadLine();
+                        Spells.Add(YourSpells);
+                    }
+
+                    Spells.Add("");
+
+                    Console.WriteLine();
+                    Console.WriteLine("Please enter your " + numberOfSpells + " Spells");
+                    Spells.Add("Spells:");
+                    for (int i = 1; i <= numberOfSpells; i++)
+                    {
+                        YourSpells = Console.ReadLine();
+                        Spells.Add(YourSpells);
+                    }
+
+                    Console.Write("Do you know more Spells? (Y for Yes, N for No) ");
+                    yesOrNo = Console.ReadLine();
+                    if (yesOrNo == "y" || yesOrNo == "Y" || yesOrNo == "yes" || yesOrNo == "Yes" || yesOrNo == "YES")
+                    {
+                        Console.Write("How many more spells do you know?");
+                        newSpells = Convert.ToInt32(Console.ReadLine());
+                        for (int i = 1; i <= newSpells; i++)
+                        {
+                            YourSpells = Console.ReadLine();
+                            Spells.Add(YourSpells);
+                        }
+                    }
+
+                    //Spell slots
+                    {
+                        if (Level == 1)
+                        {
+                            spellSlots = 1;
+                        }
+
+                        if (Level > 1 && 11 > Level)
+                        {
+                            spellSlots = 2;
+                        }
+
+                        if (10 < Level && Level < 17)
+                        {
+                            spellSlots = 3;
+                        }
+
+                        if (Level > 16)
+                        {
+                            spellSlots = 4;
+                        }
+                    }
+
+                    trueSpellSlot = spellSlots;
+                    //Arcanums
+                    {
+                        if (Level > 10)
+                        {
+                            Arcadium[0] = true;
+                            Console.WriteLine("Please enter your arcanum (6'th level)");
+                            Spells.Add(allSpellLevels[counter]);
+                            Console.WriteLine();
+
+                            Arcanum[0] = "Mystic Arcanum (6'th level): ";
+
+                            Arcanum[0] = Arcanum[0] + Console.ReadLine();
+
+                            Console.WriteLine();
+                        }
+
+                        if (Level > 12)
+                        {
+                            Arcadium[1] = true;
+
+                            Console.WriteLine("Please enter your arcanum (7'th level)");
+                            Spells.Add(allSpellLevels[counter]);
+                            Console.WriteLine();
+
+                            Arcanum[1] = "Mystic Arcanum (7'th level): ";
+
+                            Arcanum[1] = Arcanum[1] + Console.ReadLine();
+
+                            Console.WriteLine();
+                        }
+
+                        if (Level > 14)
+                        {
+                            Arcadium[2] = true;
+
+                            Console.WriteLine("Please enter your arcanum (8'th level)");
+                            Spells.Add(allSpellLevels[counter]);
+                            Console.WriteLine();
+
+                            Arcanum[2] = "Mystic Arcanum (8'th level): ";
+
+                            Arcanum[2] = Arcanum[2] + Console.ReadLine();
+
+                            Console.WriteLine();
+                        }
+
+                        if (Level > 16)
+                        {
+                            Arcadium[3] = true;
+
+                            Console.WriteLine("Please enter your arcanum (9'th level)");
+                            Console.WriteLine();
+
+                            Arcanum[3] = "Mystic Arcanum (9'th level): ";
+
+                            Arcanum[3] = Arcanum[3] + Console.ReadLine();
+
+                            Console.WriteLine();
+                        }
+                    }
+
+
                 }
             }
 
-            Console.WriteLine("Please enter your cantrips " + NumberOfCantrips + " Spells");
-            Spells.Add("Cantrips:");
-            for (int ii = 1; ii <= NumberOfCantrips; ii++)
+            //Random
             {
-                YourSpells = Console.ReadLine();
-                Spells.Add(YourSpells);
-            }
-
-            Spells.Add("");
-
-            Console.WriteLine();
-            Console.WriteLine("Please enter your " + numberOfSpells + " Spells");
-            Spells.Add("Spells:");
-            for (int i = 1; i <= numberOfSpells; i++)
-            {
-                YourSpells = Console.ReadLine();
-                Spells.Add(YourSpells);
-            }
-
-            Console.Write("Do you know more Spells? (Y for Yes, N for No) ");
-            yesOrNo = Console.ReadLine();
-            if (yesOrNo == "y" || yesOrNo == "Y" || yesOrNo == "yes" || yesOrNo == "Yes" || yesOrNo == "YES")
-            {
-                Console.Write("How many more spells do you know?");
-                newSpells = Convert.ToInt32(Console.ReadLine());
-                for (int i = 1; i <= newSpells; i++)
+                if (name == "Rando")
                 {
-                    YourSpells = Console.ReadLine();
-                    Spells.Add(YourSpells);
+                    //Cantrips known
+                    {
+                        if (Level < 3)
+                        {
+                            NumberOfCantrips = 2;
+                        }
+
+                        if (Level > 3 && 10 > Level)
+                        {
+                            NumberOfCantrips = 3;
+                        }
+
+                        if (Level > 9)
+                        {
+                            NumberOfCantrips = 4;
+                        }
+                    }
+
+                    //Spells from Your Level
+                    {
+                        for (int a = 0; a <= Level; a++)
+                        {
+                            if (Level < 9)
+                            {
+                                numberOfSpells = (numberOfSpells + 1);
+                            }
+
+                            if (Level == 10)
+                            {
+                                numberOfSpells = 10;
+                            }
+
+                            if (Level > 8 && Level != 10)
+                            {
+                                numberOfSpells = 9;
+                                for (int b = 10; b <= Level; b = b + 2)
+                                {
+                                    numberOfSpells = (b - 1);
+                                }
+                            }
+                        }
+
+                        Console.WriteLine();
+                        Console.WriteLine(numberOfSpells);
+                        Console.WriteLine();
+
+                        //Invications
+                        if (Level > 1)
+                        {
+                            Console.WriteLine("All Invocations:");
+                            Console.WriteLine();
+                            foreach (string Invocation in Warlock.Invocations)
+                            {
+                                Console.Write(Invocation);
+                            }
+                            Console.WriteLine();
+                        }
+
+                        //What Spells you can lern
+                        Console.WriteLine("All Warlock Cantrips:");
+                        Console.WriteLine();
+
+                        if (Level > 0)
+                        {
+                            foreach (int Cantrips in Warlock.Cantrips)
+                            {
+                                Console.WriteLine(SpellList.Cantrips[Cantrips]);
+                            }
+                            Console.WriteLine();
+
+                            Console.WriteLine("All 1'st Level Warlock Spells:");
+                            Console.WriteLine();
+
+                            foreach (int Spell in Warlock.Level1Spells)
+                            {
+                                Console.WriteLine(SpellList.Level1Spells[Spell]);
+                            }
+                            Console.WriteLine();
+
+                            if (2 < Level)
+                            {
+                                Console.WriteLine("All 2'nd Level Warlock Spells:");
+                                Console.WriteLine();
+
+                                foreach (int Spell in Warlock.Level2Spells)
+                                {
+                                    Console.WriteLine(SpellList.Level2Spells[Spell]);
+                                }
+                                Console.WriteLine();
+
+                                if (4 < Level)
+                                {
+                                    Console.WriteLine("All 3'rd Level Warlock Spells:");
+                                    Console.WriteLine();
+
+                                    foreach (int Spell in Warlock.Level3Spells)
+                                    {
+                                        Console.WriteLine(SpellList.Level3Spells[Spell]);
+                                    }
+                                    Console.WriteLine();
+
+                                    if (6 < Level)
+                                    {
+                                        Console.WriteLine("All 4'th Level Warlock Spells:");
+                                        Console.WriteLine();
+
+                                        foreach (int Spell in Warlock.Level4Spells)
+                                        {
+                                            Console.WriteLine(SpellList.Level4Spells[Spell]);
+                                        }
+                                        Console.WriteLine();
+
+                                        if (8 < Level)
+                                        {
+                                            Console.WriteLine("All 5'th Level Warlock Spells:");
+                                            Console.WriteLine();
+
+                                            foreach (int Spell in Warlock.Level5Spells)
+                                            {
+                                                Console.WriteLine(SpellList.Level5Spells[Spell]);
+                                            }
+                                            Console.WriteLine();
+
+                                            if (10 < Level)
+                                            {
+                                                Console.WriteLine("All 6'th Level Warlock Spells:");
+                                                Console.WriteLine();
+
+                                                foreach (int Spell in Warlock.Level6Spells)
+                                                {
+                                                    Console.WriteLine(SpellList.Level6Spells[Spell]);
+                                                }
+                                                Console.WriteLine();
+
+                                                if (12 < Level)
+                                                {
+                                                    Console.WriteLine("All 7'th Level Warlock Spells:");
+                                                    Console.WriteLine();
+
+                                                    foreach (int Spell in Warlock.Level7Spells)
+                                                    {
+                                                        Console.WriteLine(SpellList.Level7Spells[Spell]);
+                                                    }
+                                                    Console.WriteLine();
+
+                                                    if (14 < Level)
+                                                    {
+                                                        Console.WriteLine("All 8'th Level Warlock Spells:");
+                                                        Console.WriteLine();
+
+                                                        foreach (int Spell in Warlock.Level8Spells)
+                                                        {
+                                                            Console.WriteLine(SpellList.Level8Spells[Spell]);
+                                                        }
+                                                        Console.WriteLine();
+                                                        if (16 < Level)
+                                                        {
+                                                            Console.WriteLine("All 9'th Level Warlock Spells:");
+                                                            Console.WriteLine();
+
+                                                            foreach (int Spell in Warlock.Level9Spells)
+                                                            {
+                                                                Console.WriteLine(SpellList.Level9Spells[Spell]);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    //Cantrips
+                    Console.WriteLine("Please enter your cantrips " + NumberOfCantrips + " Spells");
+                    Spells.Add("Cantrips:");
+                    for (int ii = 1; ii <= NumberOfCantrips; ii++)
+                    {
+
+                        do
+                        {
+                            YourSpells = Convert.ToString(Warlock.Cantrips[rng.Next(0, Warlock.Cantrips.Length)]);
+                            YourSpells = SpellList.Cantrips[Convert.ToInt32(YourSpells)];
+                            foreach (string spell in Spells)
+                            {
+                                if (YourSpells == spell)
+                                {
+                                    makeShiftString = spell;
+                                }
+                            }
+
+                        } while (makeShiftString == YourSpells);
+                        Spells.Add(YourSpells);
+                    }
+
+                    Spells.Add("");
+
+                    Console.WriteLine();
+                    Console.WriteLine("Please enter your " + numberOfSpells + " Spells");
+                    Spells.Add("Spells:");
+                    for (int i = 1; i <= numberOfSpells; i++)
+                    {
+                        YourSpells = Convert.ToString(rng.Next(1, 6));
+
+                        if (YourSpells == "1")
+                        {
+                            do
+                            {
+                                YourSpells = Convert.ToString(Warlock.Level1Spells[rng.Next(0, Warlock.Level1Spells.Length)]);
+                                YourSpells = SpellList.Level1Spells[Convert.ToInt32(YourSpells)];
+                                foreach (string spell in Spells)
+                                {
+                                    if (YourSpells == spell)
+                                    {
+                                        makeShiftString = spell;
+                                    }
+                                }
+
+                            } while (makeShiftString == YourSpells);
+                        }
+
+                        if (YourSpells == "2")
+                        {
+                            do
+                            {
+                                YourSpells = Convert.ToString(Warlock.Level2Spells[rng.Next(0, Warlock.Level2Spells.Length)]);
+                                YourSpells = SpellList.Level2Spells[Convert.ToInt32(YourSpells)];
+                                foreach (string spell in Spells)
+                                {
+                                    if (YourSpells == spell)
+                                    {
+                                        makeShiftString = spell;
+                                    }
+                                }
+
+                            } while (makeShiftString == YourSpells);
+
+                        }
+
+                        if (YourSpells == "3")
+                        {
+                            do
+                            {
+                                YourSpells = Convert.ToString(Warlock.Level3Spells[rng.Next(0, Warlock.Level3Spells.Length)]);
+                                YourSpells = SpellList.Level3Spells[Convert.ToInt32(YourSpells)];
+                                foreach (string spell in Spells)
+                                {
+                                    if (YourSpells == spell)
+                                    {
+                                        makeShiftString = spell;
+                                    }
+                                }
+
+                            } while (makeShiftString == YourSpells);
+                        }
+
+                        if (YourSpells == "4")
+                        {
+                            do
+                            {
+                                YourSpells = Convert.ToString(Warlock.Level4Spells[rng.Next(0, Warlock.Level4Spells.Length)]);
+                                YourSpells = SpellList.Level4Spells[Convert.ToInt32(YourSpells)];
+                                foreach (string spell in Spells)
+                                {
+                                    if (YourSpells == spell)
+                                    {
+                                        makeShiftString = spell;
+                                    }
+                                }
+
+                            } while (makeShiftString == YourSpells);
+
+                        }
+
+                        if (YourSpells == "5")
+                        {
+                            do
+                            {
+                                YourSpells = Convert.ToString(Warlock.Level5Spells[rng.Next(0, Warlock.Level5Spells.Length)]);
+                                YourSpells = SpellList.Level5Spells[Convert.ToInt32(YourSpells)];
+                                foreach (string spell in Spells)
+                                {
+                                    if (YourSpells == spell)
+                                    {
+                                        makeShiftString = spell;
+                                    }
+                                }
+
+                            } while (makeShiftString == YourSpells);
+
+                        }
+
+                        Spells.Add(YourSpells);
+                        YourSpells = "";
+                        Spells.Add(YourSpells);
+                    }
+
+
+                    //Spell slots
+                    {
+                        if (Level == 1)
+                        {
+                            spellSlots = 1;
+                        }
+
+                        if (Level > 1 && 11 > Level)
+                        {
+                            spellSlots = 2;
+                        }
+
+                        if (10 < Level && Level < 17)
+                        {
+                            spellSlots = 3;
+                        }
+
+                        if (Level > 16)
+                        {
+                            spellSlots = 4;
+                        }
+                    }
+
+                    trueSpellSlot = spellSlots;
+                    //Arcanums
+                    {
+                        if (Level > 10)
+                        {
+                            Arcadium[0] = true;
+                            Console.WriteLine("Please enter your arcanum (6'th level)");
+                            Spells.Add(allSpellLevels[counter]);
+                            Console.WriteLine();
+
+                            Arcanum[0] = "Mystic Arcanum (6'th level): ";
+
+                            Arcanum[0] = Arcanum[0] + SpellList .Level6Spells [ Warlock.Level6Spells[rng.Next(0, Warlock.Level6Spells.Length)]];
+
+                            Console.WriteLine();
+                        }
+
+                        if (Level > 12)
+                        {
+                            Arcadium[1] = true;
+
+                            Console.WriteLine("Please enter your arcanum (7'th level)");
+                            Spells.Add(allSpellLevels[counter]);
+                            Console.WriteLine();
+
+                            Arcanum[1] = "Mystic Arcanum (7'th level): ";
+
+                            Arcanum[1] = Arcanum[1] + SpellList.Level7Spells [ Warlock.Level7Spells[rng.Next(0, Warlock.Level7Spells.Length)]];
+
+                            Console.WriteLine();
+                        }
+
+                        if (Level > 14)
+                        {
+                            Arcadium[2] = true;
+
+                            Console.WriteLine("Please enter your arcanum (8'th level)");
+                            Spells.Add(allSpellLevels[counter]);
+                            Console.WriteLine();
+
+                            Arcanum[2] = "Mystic Arcanum (8'th level): ";
+
+                            Arcanum[2] = Arcanum[2] + SpellList .Level8Spells [ Warlock.Level8Spells[rng.Next(0, Warlock.Level8Spells.Length)]];
+
+                            Console.WriteLine();
+                        }
+
+                        if (Level > 16)
+                        {
+                            Arcadium[3] = true;
+
+                            Console.WriteLine("Please enter your arcanum (9'th level)");
+                            Console.WriteLine();
+
+                            Arcanum[3] = "Mystic Arcanum (9'th level): ";
+
+                            Arcanum[3] = Arcanum[3] + SpellList .Level9Spells [Warlock.Level9Spells[rng.Next(0, Warlock.Level9Spells.Length)]];
+
+                            Console.WriteLine();
+                        }
+                    }
+
                 }
             }
-
-            //Spell slots
-            {
-                if (Level == 1)
-                {
-                    spellSlots = 1;
-                }
-
-                if (Level > 1 && 11 > Level)
-                {
-                    spellSlots = 2;
-                }
-
-                if (10 < Level && Level < 17)
-                {
-                    spellSlots = 3;
-                }
-
-                if (Level > 16)
-                {
-                    spellSlots = 4;
-                }
-            }
-
-            trueSpellSlot = spellSlots;
-            //Arcadiums
-            {
-                if (Level > 10)
-                {
-                    Arcadium[0] = true;
-                }
-
-                if (Level > 12)
-                {
-                    Arcadium[1] = true;
-                }
-                if (Level > 14)
-                {
-                    Arcadium[2] = true;
-                }
-
-                if (Level > 16)
-                {
-                    Arcadium[3] = true;
-                }
-            }
-
-            // levelSpellSlots[5, 6, 7, 8]
+                trueSpellSlot = spellSlots;
 
             //Savingthrows
-
             deathSavingProfieciency[4] = true;
             deathSavingProfieciency[5] = true;
 
@@ -1320,18 +1745,24 @@ namespace Rollespil
 
                 Console.Write("Is " + RandoName + " good: ");
                 yesOrNo = Console.ReadLine();
+
             } while (yesOrNo != "yes" && yesOrNo != "Yes" && yesOrNo != "YES");
 
             ////
             ////
             ////
 
+            //Race
             yourRace = Races[rng.Next(0, Races.Length)];
             Console.WriteLine("Race: " + yourRace);
 
-            MagicalClass = Classess[rng.Next(0, Classess.Length)];
+            //Class
+            // MagicalClass = Classess[rng.Next(0, Classess.Length)];
+            MagicalClass = Classess[Classess.Length-2];
+
             Console.WriteLine("Class: " + MagicalClass);
 
+            //Level
             Level = rng.Next(1, 21);
             Console.WriteLine("Level: " + Level);
 
@@ -1413,11 +1844,13 @@ namespace Rollespil
             }
 
             //Health
-            MaxHealth = (YourHitDice + Modifier[2]) + ((Modifier[2] + (((YourHitDice / 2) + 1))) * (Level - 1));
-
-            if (MaxHealth < YourHitDice)
             {
-                MaxHealth = YourHitDice + (Level - 1);
+                MaxHealth = (YourHitDice + Modifier[2]) + ((Modifier[2] + (((YourHitDice / 2) + 1))) * (Level - 1));
+
+                if (MaxHealth < YourHitDice)
+                {
+                    MaxHealth = YourHitDice + (Level - 1);
+                }
             }
 
             //Skills
@@ -1805,6 +2238,15 @@ namespace Rollespil
             counter = 0;
             Health = MaxHealth;
             DeathThreasHold = 0 - MaxHealth;
+
+            yourWeapon = rng.Next(0, Weapons.allWeapons.Length);
+
+            counter = rng.Next(0, 2);
+            if (counter == 0)
+            {
+                weaponPro = true;
+            }
+            counter = 0;
         }
 
         public static void Essentials()
@@ -1854,25 +2296,27 @@ namespace Rollespil
                 counter = 0;
 
                 //Prof Calc
-                if (Level > 0 && Level < 5)
                 {
-                    ProficiencyBonus = 2;
-                }
-                if (Level >= 5 && Level < 9)
-                {
-                    ProficiencyBonus = 3;
-                }
-                if (Level >= 9 && Level < 13)
-                {
-                    ProficiencyBonus = 4;
-                }
-                if (Level >= 13 && Level < 17)
-                {
-                    ProficiencyBonus = 5;
-                }
-                if (Level >= 17 && Level < 21)
-                {
-                    ProficiencyBonus = 6;
+                    if (Level > 0 && Level < 5)
+                    {
+                        ProficiencyBonus = 2;
+                    }
+                    if (Level >= 5 && Level < 9)
+                    {
+                        ProficiencyBonus = 3;
+                    }
+                    if (Level >= 9 && Level < 13)
+                    {
+                        ProficiencyBonus = 4;
+                    }
+                    if (Level >= 13 && Level < 17)
+                    {
+                        ProficiencyBonus = 5;
+                    }
+                    if (Level >= 17 && Level < 21)
+                    {
+                        ProficiencyBonus = 6;
+                    }
                 }
 
                 Console.WriteLine();
@@ -2268,6 +2712,8 @@ namespace Rollespil
 
         public static void Print()
         {
+            DamageDone = 0;
+
             ////////////////
             Console.Clear();
             ////////////////
@@ -2353,37 +2799,40 @@ namespace Rollespil
             }
 
             //Stats with mods
-            Console.WriteLine();
-            Console.WriteLine("Proficiency Bonus: " + ProficiencyBonus);
-
-            counter = 0;
-
-            //Saving Throws
-            Console.WriteLine();
-            Console.WriteLine("Saving Throws:");
-
-
-            counter = 0;
-            foreach (string things in AllThings)
             {
-                if (deathSavingProfieciency[counter] == false)
-                {
-                    SavingThrows[counter] = Modifier[counter];
-                }
+                Console.WriteLine();
+                Console.Write("Proficiency Bonus: " + ProficiencyBonus);
 
-                if (deathSavingProfieciency[counter] == true)
-                {
-                    SavingThrows[counter] = (Modifier[counter ] + ProficiencyBonus);
-                  
-                }
-                counter++;
-            }
-            counter = 0;
+                Console.WriteLine();
+                counter = 0;
 
-            foreach (string thing in AllThings)
-            {
-                Console.WriteLine(thing + SavingThrows[counter]);
-                counter++;
+                //Saving Throws
+                Console.WriteLine();
+                Console.WriteLine("Saving Throws:");
+
+
+                counter = 0;
+                foreach (string things in AllThings)
+                {
+                    if (deathSavingProfieciency[counter] == false)
+                    {
+                        SavingThrows[counter] = Modifier[counter];
+                    }
+
+                    if (deathSavingProfieciency[counter] == true)
+                    {
+                        SavingThrows[counter] = (Modifier[counter] + ProficiencyBonus);
+
+                    }
+                    counter++;
+                }
+                counter = 0;
+
+                foreach (string thing in AllThings)
+                {
+                    Console.WriteLine(thing + SavingThrows[counter]);
+                    counter++;
+                }
             }
 
             //Passive Perception
@@ -2398,12 +2847,12 @@ namespace Rollespil
                 {
                     foreach (int skill in StrMods)
                     {
-                        if (strProOrNot [counter]==true )
+                        if (strProOrNot[counter] == true)
                         {
-                            StrMods [counter ] = Modifier[0] + ProficiencyBonus;
+                            StrMods[counter] = Modifier[0] + ProficiencyBonus;
                         }
 
-                        if (strProOrNot[counter] == false )
+                        if (strProOrNot[counter] == false)
                         {
                             StrMods[counter] = Modifier[0];
                         }
@@ -2454,12 +2903,12 @@ namespace Rollespil
                 {
                     foreach (int skill in WisMods)
                     {
-                        if (wisProOrNot[counter ] == true)
+                        if (wisProOrNot[counter] == true)
                         {
                             WisMods[counter] = Modifier[4] + ProficiencyBonus;
                         }
 
-                        if (wisProOrNot[counter] ==false )
+                        if (wisProOrNot[counter] == false)
                         {
                             WisMods[counter] = Modifier[4];
                         }
@@ -2472,12 +2921,12 @@ namespace Rollespil
                 {
                     foreach (int skill in ChaMods)
                     {
-                        if (chaProOrNot[counter ] == true)
+                        if (chaProOrNot[counter] == true)
                         {
                             ChaMods[counter] = Modifier[5] + ProficiencyBonus;
                         }
 
-                        if (chaProOrNot[counter] ==false )
+                        if (chaProOrNot[counter] == false)
                         {
                             ChaMods[counter] = Modifier[5];
                         }
@@ -2487,136 +2936,257 @@ namespace Rollespil
             }
 
             ///Skills print
-            Console.WriteLine("Skills in:");
-            Console.WriteLine();
-            Console.WriteLine(AllThings[0]);
-
-            //Str skills
-            Console.WriteLine(Str + StrMods[0]);
-
-            Console.WriteLine();
-            Console.WriteLine(AllThings[1]);
-
-            counter = 0;
-
-            //Dex skills
-            foreach (string skill in Dex)
             {
-                Console.WriteLine(skill + DexMods[counter]);
-                counter++;
-            }
-
-            counter = 0;
-
-            //Int mods
-            Console.WriteLine();
-            Console.WriteLine(AllThings[3]);
-            foreach (string skill in Int)
-            {
-                Console.WriteLine(skill + IntMods[counter]);
-                counter++;
-            }
-
-            counter = 0;
-
-            //Wis skills
-            Console.WriteLine();
-            Console.WriteLine(AllThings[4]);
-            foreach (string skill in Wis)
-            {
-                Console.WriteLine(skill + WisMods[counter]);
-                counter++;
-            }
-
-            counter = 0;
-
-            //Cha skills
-            Console.WriteLine();
-            Console.WriteLine(AllThings[5]);
-            foreach (string skill in Cha)
-            {
-                Console.WriteLine(skill + ChaMods[counter]);
-                counter++;
-            }
-
-            counter = 0;
-            //Spells Known
-            if (SpellTotal == true)
-            {
+                Console.WriteLine("Skills in:");
                 Console.WriteLine();
-                Console.WriteLine(SpellsKnown);
-            }
-            //spells
-            if (SpeelsOrNot == true)
-            {
-                Console.WriteLine();
-                ////////////////////
-                Console.WriteLine();
-                Console.WriteLine("Your Spells:");
-                Spells.ForEach(Console.WriteLine);
-                Console.WriteLine();
-            }
+                Console.WriteLine(AllThings[0]);
 
-            if (warlockOrNot == true)
-            {
-                counter = 6;
-                foreach (bool spell in Arcadium)
+                //Str skills
+                Console.WriteLine(Str + StrMods[0]);
+
+                Console.WriteLine();
+                Console.WriteLine(AllThings[1]);
+
+                counter = 0;
+
+                //Dex skills
+                foreach (string skill in Dex)
                 {
-                    if (spell == true)
-                    {
-                        Spells.Add("Arcanum " + counter);
-                        YourSpells = Console.ReadLine();
-                        Spells.Add(YourSpells);
-                        Spells.Add("");
-                        counter++;
-                    }
+                    Console.WriteLine(skill + DexMods[counter]);
+                    counter++;
+                }
+
+                counter = 0;
+
+                //Int mods
+                Console.WriteLine();
+                Console.WriteLine(AllThings[3]);
+                foreach (string skill in Int)
+                {
+                    Console.WriteLine(skill + IntMods[counter]);
+                    counter++;
+                }
+
+                counter = 0;
+
+                //Wis skills
+                Console.WriteLine();
+                Console.WriteLine(AllThings[4]);
+                foreach (string skill in Wis)
+                {
+                    Console.WriteLine(skill + WisMods[counter]);
+                    counter++;
+                }
+
+                counter = 0;
+
+                //Cha skills
+                Console.WriteLine();
+                Console.WriteLine(AllThings[5]);
+                foreach (string skill in Cha)
+                {
+                    Console.WriteLine(skill + ChaMods[counter]);
+                    counter++;
                 }
             }
 
             counter = 0;
 
-            //DEATH
-            if (Health <= DeathThreasHold)
+            ///Spells
             {
-                DeadOrNot = true;
+                //Spells Known
+                if (SpellTotal == true)
+                {
+                    if (warlockOrNot == false)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine(SpellsKnown);
+                    }
+                        if (warlockOrNot  == true )
+                    {
+                        Console.WriteLine("You have " + spellSlots + " spellslots left");
+                    }
+                }
+                //spells
+                if (SpeelsOrNot == true)
+                {
+                    Console.WriteLine();
+                    ////////////////////
+                    Console.WriteLine();
+                    Console.WriteLine("Your Spells:");
+                    Spells.ForEach(Console.WriteLine);
+
+                    Console.WriteLine();
+
+                    if (warlockOrNot == false)
+                    {
+                        foreach (int slot in levelSpellSlots)
+                        {
+                            Console.Write(slot + ", ");///
+                            Console.WriteLine();
+                        }
+                    }
+                }
+
+                if (warlockOrNot == true)
+                {
+                    counter = 0;
+                    foreach (bool spell in Arcadium)
+                    {
+                        if (spell == true)
+                        {
+                            Console.WriteLine(Arcanum[counter]);
+                            Console.WriteLine();
+                        }
+                        counter++;
+                    }
+                }
+
+            }
+            counter = 0;
+
+            if (yourWeapon > -1)
+            {
+                YourWeaponStats();
             }
 
-            //Death Check
-            if (Health <= 0 && Health >= DeathThreasHold)
-            {
-                Health = 0;
-                Death();
+            Commands();
 
+            if (combat == true)
+            {
+                Combat();
             }
 
+            ///Death
+            {
+                //DEATH
+                if (Health <= DeathThreasHold)
+                {
+                    DeadOrNot = true;
+                }
+
+                //Death Check
+                if (Health <= 0 && Health >= DeathThreasHold)
+                {
+                    Health = 0;
+                    Death();
+
+                }
+            }
         }
 
         public static void SpellUse()
         {
-            if (warlockOrNot == false)
+            if (combat == true)
             {
-                Console.WriteLine("What spellslot do you want to use? (Type the number that you want to use, for cantrips type |0|) ");
-                Console.Write("// ");
-                SpellUsed = Convert.ToInt32(Console.ReadLine());
+                spellConcentraition = true;
 
-                if (levelSpellSlots[SpellUsed] <= 0 && SpellUsed != 0)
+                if (warlockOrNot == false)
                 {
-                    Console.WriteLine("The spell failed");
+                    Console.WriteLine("What spellslot do you want to use? (Type the number that you want to use, for cantrips type |0|) ");
+                    Console.Write("// ");
+                    SpellUsed = Convert.ToInt32(Console.ReadLine());
+
+                    if (SpellUsed == -1)
+                    {
+                        Console.WriteLine("You did it, you casted a cantrip");
+                    }
+
+                    else if (levelSpellSlots[SpellUsed] <= 0 && SpellUsed != -1)
+                    {
+                        Console.WriteLine("The spell failed");
+                    }
+
+                    else if (levelSpellSlots[SpellUsed] > 0 && SpellUsed != -1)
+                    {
+                        levelSpellSlots[SpellUsed] = levelSpellSlots[SpellUsed] - 1;
+                    }
+
+                    Console.WriteLine("Is this a concentraition spell, |Yes| or |No|");
+                    Console.Write("// ");
+                    yesOrNo = Console.ReadLine();
+                    Console.WriteLine();
+                    if (yesOrNo == "Yes" || yesOrNo == "yes" || yesOrNo == "YES" || yesOrNo == "y" || yesOrNo == "Y")
+                    {
+                        if (concentraitionCounter > 0)
+                        {
+                            Console.WriteLine("You ended your other concentraition spell");
+                        }
+
+                        Console.Write("How many minutes: ");
+                        concentraitionCounter = Convert.ToInt32(Console.ReadLine());
+                        concentraitionCounter = concentraitionCounter * 10;
+                    }
+
+                    SpellUsed--;
+
                 }
 
-                if (levelSpellSlots[SpellUsed] > 0 && SpellUsed != 0)
+                if (warlockOrNot == true)
                 {
-                    levelSpellSlots[SpellUsed] = levelSpellSlots[SpellUsed] - 1;
-                }
+                    if (spellSlots > 0)
+                    {
+                        Console.WriteLine("Is this a concentraition spell, |Yes| or |No|");
+                        Console.Write("// ");
+                        yesOrNo = Console.ReadLine();
+                        Console.WriteLine();
+                        if (yesOrNo == "Yes" || yesOrNo == "yes" || yesOrNo == "YES" || yesOrNo == "y" || yesOrNo == "Y")
+                        {
+                            if (concentraitionCounter > 0)
+                            {
+                                Console.WriteLine("You ended your other concentraition spell");
+                            }
 
-                if (SpellUsed == 0)
-                {
-                    Console.WriteLine("You did it, you casted a cantrip");
+                            Console.Write("How many minutes: ");
+                            concentraitionCounter = Convert.ToInt32(Console.ReadLine());
+                            concentraitionCounter = concentraitionCounter * 10;
+                        }
+
+                        if (spellSlots == 0)
+                        {
+                            Console.WriteLine("You are out of spell slots");
+                        }
+                    }
+                    spellSlots--;
                 }
             }
-            if (warlockOrNot == true)
+
+            if (combat == false)
             {
-                spellSlots = spellSlots - 1;
+                if (warlockOrNot == false)
+                {
+                    Console.WriteLine("What spellslot do you want to use? (Type the number that you want to use, for cantrips type |0|) ");
+                    Console.Write("// ");
+                    SpellUsed = Convert.ToInt32(Console.ReadLine());
+
+                    if (levelSpellSlots[SpellUsed] <= 0 && SpellUsed != 0)
+                    {
+                        Console.WriteLine("The spell failed");
+                    }
+
+                    if (levelSpellSlots[SpellUsed] > 0 && SpellUsed != 0)
+                    {
+                        levelSpellSlots[SpellUsed] = levelSpellSlots[SpellUsed] - 1;
+                    }
+
+                    if (SpellUsed == 0)
+                    {
+                        Console.WriteLine("You did it, you casted a cantrip");
+                    }
+                }
+
+                if (warlockOrNot == true)
+                {
+                    if (spellSlots > 0)
+                    {
+                        spellSlots = spellSlots - 1;
+                    }
+
+                    if (spellSlots == 0)
+                    {
+                        Console.WriteLine("You are out of spell slots");
+                    }
+                }
             }
         }
 
@@ -2628,27 +3198,30 @@ namespace Rollespil
             double newProficiencyBonus = ProficiencyBonus;
 
             //Prof Calc
-            if (Level > 0 && Level < 5)
             {
-                ProficiencyBonus = 2;
+                if (Level > 0 && Level < 5)
+                {
+                    ProficiencyBonus = 2;
+                }
+                if (Level >= 5 && Level < 9)
+                {
+                    ProficiencyBonus = 3;
+                }
+                if (Level >= 9 && Level < 13)
+                {
+                    ProficiencyBonus = 4;
+                }
+                if (Level >= 13 && Level < 17)
+                {
+                    ProficiencyBonus = 5;
+                }
+                if (Level >= 17 && Level < 21)
+                {
+                    ProficiencyBonus = 6;
+                }
+                counter = 0;
             }
-            if (Level >= 5 && Level < 9)
-            {
-                ProficiencyBonus = 3;
-            }
-            if (Level >= 9 && Level < 13)
-            {
-                ProficiencyBonus = 4;
-            }
-            if (Level >= 13 && Level < 17)
-            {
-                ProficiencyBonus = 5;
-            }
-            if (Level >= 17 && Level < 21)
-            {
-                ProficiencyBonus = 6;
-            }
-            counter = 0;
+
             //Classes here!
             {
                 //Barbarian
@@ -2754,7 +3327,6 @@ namespace Rollespil
 
             //Health
             MaxHealth = (YourHitDice + Modifier[2]) + ((Modifier[2] + (((YourHitDice / 2) + 1))) * (Level - 1));
-
 
             counter = 0;
 
@@ -3011,7 +3583,61 @@ namespace Rollespil
             Console.WriteLine("                           ||||  ////     ||||     ||||      ||||  ////");
             Console.WriteLine("                           |||| ////    ||||||||   |||||||   |||| ////");
             Console.WriteLine("                           ||||////     ||||||||   |||||||   ||||////");
+
             DeadOrNot = true;
+
+            Console.WriteLine("Press |C| for a complete reset, Press |R| for a normal reset:");
+
+            // Restart with another Character (C)
+            if (Exit.Key == ConsoleKey.C)
+            {
+                counter = 0;
+                foreach (bool skills in dexProOrNot)
+                {
+                    dexProOrNot[counter] = false;
+                    counter++;
+                }
+
+                counter = 0;
+                foreach (bool skills in wisProOrNot)
+                {
+                    wisProOrNot[counter] = false;
+                    counter++;
+                }
+
+                counter = 0;
+                foreach (bool skills in IntProOrNot)
+                {
+                    IntProOrNot[counter] = false;
+                    counter++;
+                }
+
+                counter = 0;
+                foreach (bool skills in chaProOrNot)
+                {
+                    chaProOrNot[counter] = false;
+                    counter++;
+                }
+
+                strProOrNot[0] = false;
+
+                barbarianOrNot = false;
+                SorcererOrNot = false;
+                SpeelsOrNot = false;
+                warlockOrNot = false;
+                DeadOrNot = false;
+                Spells.Clear();
+                Console.Clear();
+                Essentials();
+                Print();
+            }
+            // Reset your Character (R)
+            if (Exit.Key == ConsoleKey.R)
+            {
+                DeadOrNot = false;
+                Health = MaxHealth;
+            }
+
         }
 
         public static void SpellStuff()
@@ -3098,6 +3724,7 @@ namespace Rollespil
                     foreach (int stat in DexMods)
                     {
                         DexMods[counter] = DexMods[counter] + change;
+
                         counter++;
                     }
                 }
@@ -3342,67 +3969,85 @@ namespace Rollespil
             }
         }
 
-        // Useless
-        public static void DieTester()
+        public static void Combat()
         {
-            Console.Clear();
-            Console.Write("What kind of dice would you like to test, a d");
-            numberOfSides = Convert.ToInt32(Console.ReadLine());
-
-            Console.Write("How many rolls (the more the better) // ");
-            numberOfRolls = Convert.ToInt32(Console.ReadLine());
-
-            for (int i = 0; i < numberOfSides; i++)
-            {
-                counter++;
-                Position.Add(counter);
-            }
-
-            numberOfSides++;
-            for (int i = 0; i < numberOfRolls; i++)
-            {
-                double qq = 1 / (numberOfSides - 1);
-                Expected.Add(qq);
-                dieResult = rng.Next(1, numberOfSides);
-                Observed.Add(dieResult);
-            }
-
-            counter = 0;
-            for (int i = 0; i < numberOfRolls; i++)
-            {
-                OE.Add(Expected[counter] - Observed[counter]);
-                counter++;
-            }
-
-            counter = 0;
-
-            for (int i = 0; i < numberOfSides - 1; i++)
-            {
-                Console.Write(Position[counter] + "|");
-                counter++;
-            }
-
             Console.WriteLine();
-            counter = 0;
-
-            for (int i = 0; i < numberOfSides - 1; i++)
+            if (Exit.Key == ConsoleKey.Enter)
             {
-                Console.Write(Expected[counter] + "|");
-                counter++;
-
+                concentraitionCounter--;
+                combatCounter++;
             }
 
-            //Console.WriteLine();
-            //Position.ForEach(Console.Write);
+            Console.Write("Turn: " + combatCounter);
+            if (concentraitionCounter > 0)
+            {
+                Console.Write("            Concentraition counter: " + concentraitionCounter);
+            }
 
-            //Console.WriteLine();
-            //Expected.ForEach(Console.Write);
+            //Initiative
+            {
+                if (Initiative == 0)
+                {
+                    Initiative = rng.Next(1, 21) + Convert.ToInt32(Modifier[1]);
+                }
+                Console.WriteLine("          Initiative: " + Initiative);
+            }
 
-            //Console.WriteLine();
-            //Observed.ForEach(Console.Write);
+            //Consentraition
+            if (spellConcentraition == true)
+            {
+                if (DamageDone > 0)
+                {
+                    DamageDone = DamageDone / 2;
+                    Console.WriteLine(DamageDone);
 
+                    if (spellConcentraition == true)
+                    {
+                        if (DamageDone < 10)
+                        {
+                            spellBreak = rng.Next(1, 20);
+                            if (spellBreak > 10)
+                            {
+                                Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + spellBreak + Convert.ToInt32(SavingThrows[2]));
+                                Console.WriteLine("You maintain your concentraition");
+                            }
+
+                            if (spellBreak < 10)
+                            {
+                                Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + (spellBreak + Convert.ToInt32(SavingThrows[2])));
+                                Console.WriteLine("You lose your concentraition");
+                                concentraitionCounter = 0;
+                            }
+                        }
+
+                        if (DamageDone > 10)
+                        {
+                            spellBreak = rng.Next(1, 20);
+                            if (spellBreak > DamageDone)
+                            {
+                                Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + spellBreak + Convert.ToInt32(SavingThrows[2]));
+                                Console.WriteLine("You maintain your concentraition");
+                            }
+
+                            if (spellBreak < DamageDone)
+                            {
+                                Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + spellBreak + Convert.ToInt32(SavingThrows[2]));
+                                Console.WriteLine("You lose your concentraition");
+                                concentraitionCounter = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            Console.WriteLine();
+            Console.WriteLine("/////////////////////////////////");
+            Console.WriteLine("Hit |Enter| to advance the round");
+            Console.WriteLine("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+            Console.WriteLine();
         }
 
+        //Carefull a lot of stuff is going on here...
+        //It's a simple search engine
         public static void weaponShop()
         {
             Console.Clear();
@@ -3461,637 +4106,7317 @@ namespace Rollespil
             //All
             {
                 Console.WriteLine("All");
+                Console.WriteLine();
             }
 
             //Search
             {
+                Console.Write("// ");
+                searchTool = Console.ReadLine();
+
                 //All
                 {
-                    Console.Write("// ");
-                    searchTool = Console.ReadLine();
-
-                    counter = 0;
                     if (searchTool == "All")
                     {
-                        foreach (string things in Weapons.allWeapons)
+                        for (int range = 0; range < Weapons.allWeapons.Length; range++)
                         {
-                            Console.WriteLine(things + ":");
-
-                            //Complexity
+                            // Martial 
+                            foreach (int damageType in Weapons.martial)
                             {
-                                if (Weapons.firearms.Length > searchFirearms)
+                                if (damageType == range)
                                 {
-                                    if (Weapons.firearms[searchFirearms] == counter)
+                                    Console.Write(" Martial ");
+                                }
+                            }
+
+                            // Simple 
+                            foreach (int damageType in Weapons.simple)
+                            {
+                                if (damageType == range)
+                                {
+                                    Console.Write(" Simple ");
+                                }
+                            }
+
+                            // Firearms 
+                            foreach (int damageType in Weapons.firearms)
+                            {
+                                if (damageType == range)
+                                {
+                                    Console.Write(" Firearm ");
+                                }
+                            }
+
+                            ///Weapon name and damage
+                            Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                            ///Damage Type
+                            {
+                                // bludgeoning 
+                                foreach (int damageType in Weapons.bludgeoning)
+                                {
+                                    if (damageType == range)
                                     {
-                                        Console.Write(" Firearms");
-                                        searchFirearms++;
+                                        Console.Write(" bludgeoning ");
                                     }
                                 }
 
-                                if (Weapons.martial.Length > searchMartial)
+                                //Fire
+                                foreach (int damageType in Weapons.fire)
                                 {
-                                    if (Weapons.martial[searchMartial] == counter)
+                                    if (damageType == range)
                                     {
-                                        Console.Write(" Martial");
-                                        searchMartial++;
+                                        Console.Write(" fire ");
                                     }
                                 }
 
-                                if (Weapons.simple.Length > searchSimple)
+                                //Necrotic
+                                foreach (int damageType in Weapons.necrotic)
                                 {
-                                    if (Weapons.simple[searchSimple] == counter)
+                                    if (damageType == range)
                                     {
-                                        Console.Write(" Simple");
-                                        searchSimple++;
+                                        Console.Write(" necrotic ");
+                                    }
+                                }
+
+                                //Piercing
+                                foreach (int damageType in Weapons.piercing)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" piercing ");
+                                    }
+                                }
+
+                                //Radiant
+                                foreach (int damageType in Weapons.radiant)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" radiant ");
+                                    }
+                                }
+
+                                //Slashing
+                                foreach (int damageType in Weapons.slashing)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" slashing ");
                                     }
                                 }
                             }
 
-                            //Damage
+                            ///Range
                             {
-                                Console.Write(" " + Weapons.numberOfDice[counter] + "d" + Weapons.damageDie[counter]);
-
-                                //Damage type
-                                if (Weapons.bludgeoning.Length > searchIntBlud)
+                                //Ranged
                                 {
-                                    if (Weapons.bludgeoning[searchIntBlud] == counter)
+                                    // Ranged 
+                                    foreach (int distance in Weapons.ranged)
                                     {
-                                        Console.Write(" Bludgeoning");
-                                        searchIntBlud++;
+                                        if (distance == range)
+                                        {
+                                            Console.Write("ranged ");
+                                        }
                                     }
-                                }
 
-                                if (Weapons.fire.Length > searchFire)
-                                {
-                                    if (Weapons.fire[searchFire] == counter)
+                                    //Melee
+                                    foreach (int distance in Weapons.melee)
                                     {
-                                        Console.Write(" Fire");
-                                        searchFire++;
+                                        if (distance == range)
+                                        {
+                                            Console.Write("melee ");
+                                        }
                                     }
-                                }
 
-                                if (Weapons.necrotic.Length > searchNec)
-                                {
-                                    if (Weapons.necrotic[searchNec] == counter)
-                                    {
-                                        Console.Write(" Necrotic");
-                                        searchNec++;
-                                    }
-                                }
-
-                                if (Weapons.piercing.Length > searchPier)
-                                {
-                                    if (Weapons.piercing[searchPier] == counter)
-                                    {
-                                        Console.Write(" Piercing");
-                                        searchPier++;
-                                    }
-                                }
-
-                                if (Weapons.radiant.Length > searchRadiant)
-                                {
-                                    if (Weapons.radiant[searchRadiant] == counter)
-                                    {
-                                        Console.Write(" Radiant");
-                                        searchRadiant++;
-                                    }
-                                }
-
-                                if (Weapons.slashing.Length > searchSlash)
-                                {
-                                    if (Weapons.slashing[searchSlash] == counter)
-                                    {
-                                        Console.Write(" Slashing");
-                                        searchSlash++;
-                                    }
-                                }
-                            }
-
-                            //Range
-                            {
-                                if (Weapons.ranged.Length > Ranged)
-                                {
-                                    if (Weapons.ranged[Ranged] == counter)
-                                    {
-                                        Console.Write(" Ranged");
-                                        Ranged++;
-                                    }
-                                }
-
-                                if (Weapons.melee.Length > Melee)
-                                {
-                                    if (Weapons.melee[Melee] == counter)
-                                    {
-                                        Console.Write(" Melee");
-                                        Melee++;
-                                    }
+                                    Console.Write("damage ");
                                 }
                             }
 
                             Console.WriteLine();
 
-                            //Properties
+                            ///Properties
                             {
-                                if (Weapons.ammunition.Length > Ammu)
+                                //Ammu
+                                foreach (int prop in Weapons.ammunition)
                                 {
-                                    if (Weapons.ammunition[Ammu] == counter)
+                                    if (prop == range)
                                     {
-                                        Console.WriteLine(" -Ammunition");
-                                        Ammu++;
+                                        Console.WriteLine(" -Ammunation ");
                                     }
                                 }
 
-                                if (Weapons.burstFire.Length > Burst)
+                                //Burstfire
+                                foreach (int prop in Weapons.burstFire)
                                 {
-                                    if (Weapons.burstFire[Burst] == counter)
+                                    if (prop == range)
                                     {
-                                        Console.WriteLine(" -Burstfire");
-                                        Burst++;
+                                        Console.WriteLine(" -Burstfire ");
                                     }
                                 }
 
-                                if (Weapons.explosive.Length > Expl)
+                                //Explosive
+                                foreach (int prop in Weapons.explosive)
                                 {
-                                    if (Weapons.explosive[Expl] == counter)
+                                    if (prop == range)
                                     {
                                         Console.WriteLine(" -Explosive");
-                                        Expl++;
                                     }
                                 }
 
-                                if (Weapons.finesse.Length > Fine)
+                                //Finess
+                                foreach (int prop in Weapons.finesse)
                                 {
-                                    if (Weapons.finesse[Fine] == counter)
+                                    if (prop == range)
                                     {
                                         Console.WriteLine(" -Finesse");
-                                        Fine++;
                                     }
                                 }
 
-                                if (Weapons.heavy.Length > Heavy)
+                                //Heavy
+                                foreach (int prop in Weapons.heavy)
                                 {
-                                    if (Weapons.heavy[Heavy] == counter)
+                                    if (prop == range)
                                     {
                                         Console.WriteLine(" -Heavy");
-                                        Heavy++;
                                     }
                                 }
 
-                                if (Weapons.light.Length > Light)
+                                //Light
+                                foreach (int prop in Weapons.light)
                                 {
-                                    if (Weapons.light[Light] == counter)
+                                    if (prop == range)
                                     {
                                         Console.WriteLine(" -Light");
-                                        Light++;
                                     }
                                 }
 
-                                if (Weapons.loading.Length > Load)
+                                //Loading
+                                foreach (int prop in Weapons.loading)
                                 {
-                                    if (Weapons.loading[Load] == counter)
+                                    if (prop == range)
                                     {
                                         Console.WriteLine(" -Loading");
-                                        Load++;
                                     }
                                 }
 
-                                if (Weapons.misfire.Length > Mis)
+                                //Misfire
+                                foreach (int prop in Weapons.misfire)
                                 {
-                                    if (Weapons.misfire[Mis] == counter)
+                                    if (prop == range)
                                     {
                                         Console.WriteLine(" -Misfire");
-                                        Mis++;
                                     }
                                 }
 
-                                if (Weapons.reach.Length > Reach)
+                                //Reach
+                                foreach (int prop in Weapons.reach)
                                 {
-                                    if (Weapons.reach[Reach] == counter)
+                                    if (prop == range)
                                     {
                                         Console.WriteLine(" -Reach");
-                                        Reach++;
                                     }
                                 }
 
-                                if (Weapons.reload.Length > Re)
+                                //Reload
+                                foreach (int prop in Weapons.reload)
                                 {
-                                    if (Weapons.reload[Re] == counter)
+                                    if (prop == range)
                                     {
-                                        Console.WriteLine(" -Reload");
-                                        Re++;
+                                        Console.WriteLine(" -Reaload");
                                     }
                                 }
 
-                                if (Weapons.special.Length > Special)
+                                //Special
+                                foreach (int prop in Weapons.special)
                                 {
-                                    if (Weapons.special[Special] == counter)
+                                    if (prop == range)
                                     {
                                         Console.WriteLine(" -Special");
-                                        Special++;
                                     }
                                 }
 
-                                if (Weapons.thrown.Length > Thrown)
+                                //Thrown
+                                foreach (int prop in Weapons.thrown)
                                 {
-                                    if (Weapons.thrown[Thrown] == counter)
+                                    if (prop == range)
                                     {
                                         Console.WriteLine(" -Thrown");
-                                        Thrown++;
                                     }
                                 }
 
-                                if (Weapons.twoHanded.Length > Two)
+                                //Two handed
+                                foreach (int prop in Weapons.twoHanded)
                                 {
-                                    if (Weapons.twoHanded[Two] == counter)
+                                    if (prop == range)
                                     {
-                                        Console.WriteLine(" -Twohanded");
-                                        Two++;
+                                        Console.WriteLine(" -Two handed");
                                     }
                                 }
 
-                                if (Weapons.versatile.Length > Ver)
+                                //Versatile
+                                foreach (int prop in Weapons.versatile)
                                 {
-                                    if (Weapons.versatile[Ver] == counter)
+                                    if (prop == range)
                                     {
                                         Console.WriteLine(" -Versatile");
-                                        Ver++;
                                     }
                                 }
+
+
                             }
 
                             Console.WriteLine();
-                            counter++;
-
-
                         }
                     }
                 }
 
                 ///Complexity
-
-                //Simple
                 {
-                    if (searchTool == "Simple")
+                    //Simple
                     {
-                        foreach (int things in Weapons.simple)
+                        if (searchTool == "Simple")
+                        ///Complexity
                         {
-                            Console.WriteLine(Weapons.allWeapons[things] + ":");
-
-                            if (Weapons.bludgeoning[searchIntBlud] < things)
+                            //Simple
+                            foreach (int complexity in Weapons.simple)
                             {
-                                searchIntBlud++;
-                            }
+                                Console.Write("Simple ");
 
-                            if (Weapons.bludgeoning[searchIntBlud] == things)
-                            {
-                                Console.WriteLine(" Bludgeoning");
-                                searchIntBlud++;
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[complexity] + ": " + Weapons.numberOfDice[complexity] + "d" + Weapons.damageDie[complexity]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == complexity)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == complexity)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
                             }
-                            Console.WriteLine();
-                            counter++;
+                        }
+                    }
+
+                    //Martial
+                    {
+
+                        if (searchTool == "Martial")
+                        ///Complexity
+                        {
+                            //Simple
+                            foreach (int complexity in Weapons.martial)
+                            {
+                                Console.Write("Martial ");
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[complexity] + ": " + Weapons.numberOfDice[complexity] + "d" + Weapons.damageDie[complexity]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == complexity)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == complexity)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+
+                    //Firearms
+                    {
+
+                        if (searchTool == "Firearms")
+                        {
+                            //Firearm
+                            foreach (int complexity in Weapons.firearms)
+                            {
+                                Console.Write("Firearm ");
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[complexity] + ": " + Weapons.numberOfDice[complexity] + "d" + Weapons.damageDie[complexity]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == complexity)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == complexity)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == complexity)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == complexity)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
                         }
                     }
                 }
-                //Martial
+
+                ///Range
                 {
-                    counter = 0;
-                    if (searchTool == "Martial")
+                    //Ranged
                     {
-                        foreach (int things in Weapons.martial )
+                        if (searchTool == "Ranged")
                         {
-                            Console.WriteLine(Weapons.allWeapons[things] + ":");
-
-                            //Complexity
+                            foreach (int range in Weapons.ranged)
                             {
-                                if (Weapons.firearms.Length > searchFirearms)
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
                                 {
-                                    if (Weapons.firearms [searchFirearms] < things)
+                                    if (damageType == range)
                                     {
-                                        searchFirearms ++;
-                                    }
-
-                                    if (Weapons.firearms[searchFirearms] == things)
-                                    {
-                                        Console.Write(" Firearms");
-                                        searchFirearms++;
+                                        Console.Write(" Martial ");
                                     }
                                 }
 
-                                if (Weapons.martial.Length > searchMartial)
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
                                 {
-
-                                    if (Weapons.martial [searchMartial] < things)
+                                    if (damageType == range)
                                     {
-                                        searchMartial++;
-                                    }
-
-                                    if (Weapons.martial[searchMartial] == things)
-                                    {
-                                        Console.Write(" Martial");
-                                        searchMartial++;
+                                        Console.Write(" Simple ");
                                     }
                                 }
 
-                                if (Weapons.simple.Length > searchSimple)
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
                                 {
-                                    if (Weapons.simple [searchSimple] < things)
+                                    if (damageType == range)
                                     {
-                                        searchSimple ++;
-                                    }
-
-                                    if (Weapons.simple[searchSimple] == things)
-                                    {
-                                        Console.Write(" Simple");
-                                        searchSimple++;
+                                        Console.Write(" Firearms ");
                                     }
                                 }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
                             }
+                        }
+                    }
 
-                            //Damage
+                    //Melee
+                    {
+                        if (searchTool == "Melee")
+                        {
+                            foreach (int range in Weapons.melee)
                             {
-                                Console.Write(" " + Weapons.numberOfDice[things] + "d" + Weapons.damageDie[things]);
-
-                                //Damage type
-                                if (Weapons.bludgeoning.Length > searchIntBlud)
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
                                 {
-                                    if (Weapons.bludgeoning[searchIntBlud] < things)
+                                    if (damageType == range)
                                     {
-                                        searchIntBlud++;
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearms ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
                                     }
 
-                                    if (Weapons.bludgeoning.Length > searchIntBlud)
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
                                     {
-                                        if (Weapons.bludgeoning[searchIntBlud] == things)
+                                        if (damageType == range)
                                         {
-                                            Console.Write(" Bludgeoning");
-                                            searchIntBlud++;
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
                                         }
                                     }
                                 }
 
-                                if (Weapons.fire.Length > searchFire)
+                                ///Range
                                 {
-                                    if (Weapons.fire [searchFire] < things)
+                                    //Ranged
                                     {
-                                        searchFire++;
-                                    }
-
-                                    if (Weapons.fire.Length > searchFire)
-                                    {
-                                        if (Weapons.fire[searchFire] == things)
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
                                         {
-                                            Console.Write(" Fire");
-                                            searchFire++;
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
                                         }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
                                     }
                                 }
 
-                                if (Weapons.necrotic.Length > searchNec)
-                                {
-                                    if (Weapons.necrotic [searchNec] < things)
-                                    {
-                                        searchNec++;
-                                    }
+                                Console.WriteLine();
 
-                                    if (Weapons.necrotic .Length > searchNec)
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
                                     {
-                                        if (Weapons.necrotic[searchNec] == things)
+                                        if (prop == range)
                                         {
-                                            Console.Write(" Necrotic");
-                                            searchNec++;
+                                            Console.WriteLine(" -Ammunation ");
                                         }
                                     }
-                                }
 
-                                if (Weapons.piercing.Length > searchPier)
-                                {
-                                    if (Weapons.piercing [searchPier] < things)
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
                                     {
-                                        searchPier++;
-                                    }
-
-                                    if (Weapons.piercing .Length > searchPier)
-                                    {
-                                        if (Weapons.piercing[searchPier] == things)
+                                        if (prop == range)
                                         {
-                                            Console.Write(" Piercing");
-                                            searchPier++;
+                                            Console.WriteLine(" -Burstfire ");
                                         }
                                     }
-                                }
 
-                                if (Weapons.radiant.Length > searchRadiant)
-                                {
-                                    if (Weapons.radiant [searchRadiant] < things)
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
                                     {
-                                        searchRadiant++;
-                                    }
-
-                                    if (Weapons.radiant .Length > searchRadiant)
-                                    {
-                                        if (Weapons.radiant[searchRadiant] == things)
+                                        if (prop == range)
                                         {
-                                            Console.Write(" Radiant");
-                                            searchRadiant++;
+                                            Console.WriteLine(" -Explosive");
                                         }
                                     }
-                                }
 
-                                if (Weapons.slashing.Length > searchSlash)
-                                {
-                                    if (Weapons.slashing [searchSlash] < things)
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
                                     {
-                                        searchSlash++;
-                                    }
-
-                                    if (Weapons.slashing.Length >= searchSlash)
-                                    {
-                                        if (Weapons.slashing[searchSlash] == things)
+                                        if (prop == range)
                                         {
-                                            Console.Write(" Slashing");
-                                            searchSlash++;
+                                            Console.WriteLine(" -Finesse");
                                         }
                                     }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
                                 }
+
+                                Console.WriteLine();
                             }
-
-                            //Range
-                            {
-                                if (Weapons.ranged.Length > Ranged)
-                                {
-                                    if (Weapons.ranged [Ranged] < things)
-                                    {
-                                        Ranged++;
-                                    }
-
-                                    if (Weapons.ranged .Length > Ranged )
-                                    {
-                                        if (Weapons.ranged[Ranged] == things)
-                                        {
-                                            Console.Write(" Ranged");
-                                            Ranged++;
-                                        }
-                                    }
-                                }
-
-                                if (Weapons.melee.Length > Melee)
-                                {
-                                    if (Weapons.melee [Melee ] < things)
-                                    {
-                                        Melee ++;
-                                    }
-
-                                    if (Weapons.melee .Length > Melee )
-                                    {
-                                        if (Weapons.melee[Melee] == things)
-                                        {
-                                            Console.Write(" Melee");
-                                            Melee++;
-                                        }
-                                    }
-                                }
-                            }
-
-                            Console.WriteLine();
-
-                            ///MISSING\\\
-
-                            //Properties
-                            {
-                                if (Weapons.ammunition.Length > Ammu)
-                                {
-                                    if (Weapons.ammunition[Ammu] == things)
-                                    {
-                                        Console.WriteLine(" -Ammunition");
-                                        Ammu++;
-                                    }
-                                }
-
-                                if (Weapons.burstFire.Length > Burst)
-                                {
-                                    if (Weapons.burstFire[Burst] == things)
-                                    {
-                                        Console.WriteLine(" -Burstfire");
-                                        Burst++;
-                                    }
-                                }
-
-                                if (Weapons.explosive.Length > Expl)
-                                {
-                                    if (Weapons.explosive[Expl] == things)
-                                    {
-                                        Console.WriteLine(" -Explosive");
-                                        Expl++;
-                                    }
-                                }
-
-                                if (Weapons.finesse.Length > Fine)
-                                {
-                                    if (Weapons.finesse[Fine] == things)
-                                    {
-                                        Console.WriteLine(" -Finesse");
-                                        Fine++;
-                                    }
-                                }
-
-                                if (Weapons.heavy.Length > Heavy)
-                                {
-                                    if (Weapons.heavy[Heavy] == things)
-                                    {
-                                        Console.WriteLine(" -Heavy");
-                                        Heavy++;
-                                    }
-                                }
-
-                                if (Weapons.light.Length > Light)
-                                {
-                                    if (Weapons.light[Light] == things)
-                                    {
-                                        Console.WriteLine(" -Light");
-                                        Light++;
-                                    }
-                                }
-
-                                if (Weapons.loading.Length > Load)
-                                {
-                                    if (Weapons.loading[Load] == things)
-                                    {
-                                        Console.WriteLine(" -Loading");
-                                        Load++;
-                                    }
-                                }
-
-                                if (Weapons.misfire.Length > Mis)
-                                {
-                                    if (Weapons.misfire[Mis] == things)
-                                    {
-                                        Console.WriteLine(" -Misfire");
-                                        Mis++;
-                                    }
-                                }
-
-                                if (Weapons.reach.Length > Reach)
-                                {
-                                    if (Weapons.reach[Reach] == things)
-                                    {
-                                        Console.WriteLine(" -Reach");
-                                        Reach++;
-                                    }
-                                }
-
-                                if (Weapons.reload.Length > Re)
-                                {
-                                    if (Weapons.reload[Re] == things)
-                                    {
-                                        Console.WriteLine(" -Reload");
-                                        Re++;
-                                    }
-                                }
-
-                                if (Weapons.special.Length > Special)
-                                {
-                                    if (Weapons.special[Special] == things)
-                                    {
-                                        Console.WriteLine(" -Special");
-                                        Special++;
-                                    }
-                                }
-
-                                if (Weapons.thrown.Length > Thrown)
-                                {
-                                    if (Weapons.thrown[Thrown] == things)
-                                    {
-                                        Console.WriteLine(" -Thrown");
-                                        Thrown++;
-                                    }
-                                }
-
-                                if (Weapons.twoHanded.Length > Two)
-                                {
-                                    if (Weapons.twoHanded[Two] == things)
-                                    {
-                                        Console.WriteLine(" -Twohanded");
-                                        Two++;
-                                    }
-                                }
-
-                                if (Weapons.versatile.Length > Ver)
-                                {
-                                    if (Weapons.versatile[Ver] == things)
-                                    {
-                                        Console.WriteLine(" -Versatile");
-                                        Ver++;
-                                    }
-                                }
-                            }
-
-                            Console.WriteLine();
-                            counter++;
-
-
                         }
                     }
                 }
+
+                ///Damage type
+                {
+                    //Blud
+                    {
+                        if (searchTool == "Bludgeoning")
+                        {
+                            foreach (int range in Weapons.bludgeoning)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Fire
+                    {
+                        if (searchTool == "Fire")
+                        {
+                            foreach (int range in Weapons.fire)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Necro
+                    {
+                        if (searchTool == "Necrotic")
+                        {
+                            foreach (int range in Weapons.necrotic)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Piercing
+                    {
+                        if (searchTool == "Piercing")
+                        {
+                            foreach (int range in Weapons.piercing)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Radiant
+                    {
+                        if (searchTool == "Radiant")
+                        {
+                            foreach (int range in Weapons.radiant)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Slashing
+                    {
+                        if (searchTool == "Slashing")
+                        {
+                            foreach (int range in Weapons.slashing)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" bludgeoning ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+                }
+
+                ///Properties
+                {
+                    //Ammu
+                    {
+                        if (searchTool == "Ammunition")
+                        {
+                            foreach (int range in Weapons.ammunition)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firemarm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Burstfire
+                    {
+                        if (searchTool == "Burstfire")
+                        {
+                            foreach (int range in Weapons.burstFire)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Explosive
+                    {
+                        if (searchTool == "Explosive")
+                        {
+                            foreach (int range in Weapons.explosive)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Finesse
+                    {
+                        if (searchTool == "Finesse")
+                        {
+                            foreach (int range in Weapons.finesse)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Heavy
+                    {
+                        if (searchTool == "Heavy")
+                        {
+                            foreach (int range in Weapons.heavy)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Light
+                    {
+                        if (searchTool == "Light")
+                        {
+                            foreach (int range in Weapons.light)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Loading
+                    {
+                        if (searchTool == "Loading")
+                        {
+                            foreach (int range in Weapons.loading)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Misfire
+                    {
+                        if (searchTool == "Misfire")
+                        {
+                            foreach (int range in Weapons.misfire)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Reach
+                    {
+                        if (searchTool == "Reach")
+                        {
+                            foreach (int range in Weapons.reach)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Reload
+                    {
+                        if (searchTool == "Reload")
+                        {
+                            foreach (int range in Weapons.reload)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Special
+                    {
+                        if (searchTool == "Special")
+                        {
+                            foreach (int range in Weapons.special)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Thrown
+                    {
+                        if (searchTool == "Thrown")
+                        {
+                            foreach (int range in Weapons.thrown)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Two handed
+                    {
+                        if (searchTool == "Two handed")
+                        {
+                            foreach (int range in Weapons.twoHanded)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+
+                    //Versatile
+                    {
+                        if (searchTool == "Versatile")
+                        {
+                            foreach (int range in Weapons.versatile)
+                            {
+                                // Martial 
+                                foreach (int damageType in Weapons.martial)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Martial ");
+                                    }
+                                }
+
+                                // Simple 
+                                foreach (int damageType in Weapons.simple)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Simple ");
+                                    }
+                                }
+
+                                // Firearms 
+                                foreach (int damageType in Weapons.firearms)
+                                {
+                                    if (damageType == range)
+                                    {
+                                        Console.Write(" Firearm ");
+                                    }
+                                }
+
+                                ///Weapon name and damage
+                                Console.Write(Weapons.allWeapons[range] + ": " + Weapons.numberOfDice[range] + "d" + Weapons.damageDie[range]);
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == range)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+
+                                ///Range
+                                {
+                                    //Ranged
+                                    {
+                                        // Ranged 
+                                        foreach (int distance in Weapons.ranged)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("ranged ");
+                                            }
+                                        }
+
+                                        //Melee
+                                        foreach (int distance in Weapons.melee)
+                                        {
+                                            if (distance == range)
+                                            {
+                                                Console.Write("melee ");
+                                            }
+                                        }
+
+                                        Console.Write("damage ");
+                                    }
+                                }
+
+                                Console.WriteLine();
+
+                                ///Properties
+                                {
+                                    //Ammu
+                                    foreach (int prop in Weapons.ammunition)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Ammunation ");
+                                        }
+                                    }
+
+                                    //Burstfire
+                                    foreach (int prop in Weapons.burstFire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Burstfire ");
+                                        }
+                                    }
+
+                                    //Explosive
+                                    foreach (int prop in Weapons.explosive)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Explosive");
+                                        }
+                                    }
+
+                                    //Finess
+                                    foreach (int prop in Weapons.finesse)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Finesse");
+                                        }
+                                    }
+
+                                    //Heavy
+                                    foreach (int prop in Weapons.heavy)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Heavy");
+                                        }
+                                    }
+
+                                    //Light
+                                    foreach (int prop in Weapons.light)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Light");
+                                        }
+                                    }
+
+                                    //Loading
+                                    foreach (int prop in Weapons.loading)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Loading");
+                                        }
+                                    }
+
+                                    //Misfire
+                                    foreach (int prop in Weapons.misfire)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Misfire");
+                                        }
+                                    }
+
+                                    //Reach
+                                    foreach (int prop in Weapons.reach)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reach");
+                                        }
+                                    }
+
+                                    //Reload
+                                    foreach (int prop in Weapons.reload)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Reaload");
+                                        }
+                                    }
+
+                                    //Special
+                                    foreach (int prop in Weapons.special)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Special");
+                                        }
+                                    }
+
+                                    //Thrown
+                                    foreach (int prop in Weapons.thrown)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Thrown");
+                                        }
+                                    }
+
+                                    //Two handed
+                                    foreach (int prop in Weapons.twoHanded)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Two handed");
+                                        }
+                                    }
+
+                                    //Versatile
+                                    foreach (int prop in Weapons.versatile)
+                                    {
+                                        if (prop == range)
+                                        {
+                                            Console.WriteLine(" -Versatile");
+                                        }
+                                    }
+
+
+                                }
+
+                                Console.WriteLine();
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            //Add Weapon
+            {
+                Console.WriteLine("Add a weapon");
+                Console.Write("// ");
+                makeShiftString = Console.ReadLine();
+                counter = 0;
+                foreach (string killThing in Weapons.allWeapons)
+                {
+                    if (makeShiftString == Convert.ToString(counter))
+                    {
+                        yourWeapon = counter;
+                    }
+
+                    if (makeShiftString == killThing)
+                    {
+                        yourWeapon = counter;
+                    }
+                    counter++;
+                }
+                counter = 0;
+
+                //Finnese or ranged
+                foreach (int bowGun in Weapons.ranged)
+                {
+                    if (bowGun == yourWeapon)
+                    {
+                        rangedWeapon = true;
+                    }
+                }
+
+
+                Console.WriteLine("Are you proficient in this Weapon |Yes| or |No|");
+                Console.Write("// ");
+
+                yesOrNo = Console.ReadLine();
+
+                if (yesOrNo == "y" || yesOrNo == "Y" || yesOrNo == "yes" || yesOrNo == "Yes" || yesOrNo == "YES")
+                {
+                    weaponPro = true;
+                }
+
+            }
+
+        }
+
+        public static void Attack()
+        {
+            Console.WriteLine(Weapons.allWeapons[yourWeapon] + ":");
+
+            //To hit
+            {
+                if (weaponPro == true)
+                {
+                    toHit = Convert.ToInt32(Modifier[0] + ProficiencyBonus);
+                }
+
+                if (weaponPro == false)
+                {
+                    toHit = Convert.ToInt32(Modifier[0]);
+                }
+
+                attackRoll = rng.Next(1, 21);
+
+                if (attackRoll != 1)
+                {
+                    if (attackRoll != 20)
+                    {
+                        Console.WriteLine("To hit " + attackRoll + " + " + toHit + " = " + (attackRoll + toHit));
+                    }
+
+                    if (attackRoll == 20)
+                    {
+                        Console.WriteLine(attackRoll + "CRIT!!!");
+                    }
+                }
+            }
+
+            //Damage roll
+            {
+                Console.WriteLine();
+
+                //Melee
+                if (rangedWeapon == false)
+                {
+                    //If not a crit
+                    if (attackRoll != 20 && attackRoll != 1)
+                    {
+                        for (int i = 0; i < Weapons.numberOfDice[yourWeapon]; i++)
+                        {
+                            weaponDamageDealt = rng.Next(1, Weapons.damageDie[yourWeapon] + 1) + weaponDamageDealt;
+                        }
+
+                        if (weaponPro == false)
+                        {
+                            Console.Write("You dealt " + Weapons.numberOfDice[yourWeapon] + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt + "||" + weaponDamageDealt + " + " + Modifier[0] + " = " + (weaponDamageDealt + Modifier[0]));
+                        }
+
+                        if (weaponPro == true)
+                        {
+                            Console.Write("You dealt " + Weapons.numberOfDice[yourWeapon] + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt + "||" + weaponDamageDealt + " + " + Modifier[0] + " + " + ProficiencyBonus + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                        }
+
+                        ///Damage Type
+                        {
+                            // bludgeoning 
+                            foreach (int damageType in Weapons.bludgeoning)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" bludgeoning ");
+                                }
+                            }
+
+                            //Fire
+                            foreach (int damageType in Weapons.fire)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" fire ");
+                                }
+                            }
+
+                            //Necrotic
+                            foreach (int damageType in Weapons.necrotic)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" necrotic ");
+                                }
+                            }
+
+                            //Piercing
+                            foreach (int damageType in Weapons.piercing)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" piercing ");
+                                }
+                            }
+
+                            //Radiant
+                            foreach (int damageType in Weapons.radiant)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" radiant ");
+                                }
+                            }
+
+                            //Slashing
+                            foreach (int damageType in Weapons.slashing)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" slashing ");
+                                }
+                            }
+                        }
+                        Console.Write("damage");
+
+                    }
+
+                    //If crit
+                    if (attackRoll == 20)
+                    {
+
+                        for (int i = 0; i < (Weapons.numberOfDice[yourWeapon] * 2); i++)
+                        {
+                            weaponDamageDealt = rng.Next(1, Weapons.damageDie[yourWeapon] + 1) + weaponDamageDealt;
+                        }
+
+                        if (weaponPro == true)
+                        {
+                            Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 2) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
+
+                            Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " + " + ProficiencyBonus + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                        }
+
+                        if (weaponPro == false)
+                        {
+                            Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 2) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
+
+                            Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " + " + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                        }
+
+                        ///Damage Type
+                        {
+                            // bludgeoning 
+                            foreach (int damageType in Weapons.bludgeoning)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" bludgeoning ");
+                                }
+                            }
+
+                            //Fire
+                            foreach (int damageType in Weapons.fire)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" fire ");
+                                }
+                            }
+
+                            //Necrotic
+                            foreach (int damageType in Weapons.necrotic)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" necrotic ");
+                                }
+                            }
+
+                            //Piercing
+                            foreach (int damageType in Weapons.piercing)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" piercing ");
+                                }
+                            }
+
+                            //Radiant
+                            foreach (int damageType in Weapons.radiant)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" radiant ");
+                                }
+                            }
+
+                            //Slashing
+                            foreach (int damageType in Weapons.slashing)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" slashing ");
+                                }
+                            }
+                        }
+                        Console.Write("damage");
+                    }
+
+                    //Flops
+                    if (attackRoll == 1)
+                    {
+                        Console.WriteLine("A swing and a miss...");
+                    }
+
+                    weaponDamageDealt = 0;
+                }
+
+                //Ranged weapon// Finesse
+                if (rangedWeapon == true)
+                {
+                    //If not a crit
+                    if (attackRoll != 20 && attackRoll != 1)
+                    {
+                        for (int i = 0; i < Weapons.numberOfDice[yourWeapon]; i++)
+                        {
+                            weaponDamageDealt = rng.Next(1, Weapons.damageDie[yourWeapon] + 1) + weaponDamageDealt;
+                        }
+
+                        if (weaponPro == false)
+                        {
+                            Console.Write("You dealt " + Weapons.numberOfDice[yourWeapon] + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt + "||" + weaponDamageDealt + " + " + Modifier[1] + " = " + (weaponDamageDealt + Modifier[1]));
+                        }
+
+                        if (weaponPro == true)
+                        {
+                            Console.Write("You dealt " + Weapons.numberOfDice[yourWeapon] + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt + "||" + weaponDamageDealt + " + " + Modifier[1] + " + " + ProficiencyBonus + " = " + (weaponDamageDealt + Modifier[1] + ProficiencyBonus));
+                        }
+
+                        ///Damage Type
+                        {
+                            // bludgeoning 
+                            foreach (int damageType in Weapons.bludgeoning)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" bludgeoning ");
+                                }
+                            }
+
+                            //Fire
+                            foreach (int damageType in Weapons.fire)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" fire ");
+                                }
+                            }
+
+                            //Necrotic
+                            foreach (int damageType in Weapons.necrotic)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" necrotic ");
+                                }
+                            }
+
+                            //Piercing
+                            foreach (int damageType in Weapons.piercing)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" piercing ");
+                                }
+                            }
+
+                            //Radiant
+                            foreach (int damageType in Weapons.radiant)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" radiant ");
+                                }
+                            }
+
+                            //Slashing
+                            foreach (int damageType in Weapons.slashing)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" slashing ");
+                                }
+                            }
+                        }
+                        Console.Write("damage");
+
+                    }
+
+                    //If crit
+                    if (attackRoll == 20)
+                    {
+
+                        for (int i = 0; i < (Weapons.numberOfDice[yourWeapon] * 2); i++)
+                        {
+                            weaponDamageDealt = rng.Next(1, Weapons.damageDie[yourWeapon] + 1) + weaponDamageDealt;
+                        }
+
+                        if (weaponPro == true)
+                        {
+                            Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 2) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
+
+                            Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[1] + " + " + ProficiencyBonus + " = " + (weaponDamageDealt + Modifier[1] + ProficiencyBonus));
+                        }
+
+                        if (weaponPro == false)
+                        {
+                            Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 2) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
+
+                            Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[1] + " = " + (weaponDamageDealt + Modifier[1] + ProficiencyBonus));
+                        }
+
+                        ///Damage Type
+                        {
+                            // bludgeoning 
+                            foreach (int damageType in Weapons.bludgeoning)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" bludgeoning ");
+                                }
+                            }
+
+                            //Fire
+                            foreach (int damageType in Weapons.fire)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" fire ");
+                                }
+                            }
+
+                            //Necrotic
+                            foreach (int damageType in Weapons.necrotic)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" necrotic ");
+                                }
+                            }
+
+                            //Piercing
+                            foreach (int damageType in Weapons.piercing)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" piercing ");
+                                }
+                            }
+
+                            //Radiant
+                            foreach (int damageType in Weapons.radiant)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" radiant ");
+                                }
+                            }
+
+                            //Slashing
+                            foreach (int damageType in Weapons.slashing)
+                            {
+                                if (damageType == yourWeapon)
+                                {
+                                    Console.Write(" slashing ");
+                                }
+                            }
+                        }
+                        Console.Write("damage");
+                    }
+
+                    //Flops
+                    if (attackRoll == 1)
+                    {
+                        Console.WriteLine("A swing and a miss...");
+                    }
+
+                    weaponDamageDealt = 0;
+                }
+            }
+        }
+
+        public static void YourWeaponStats()
+        {
+            ///Complexity
+            {
+
+                // bludgeoning 
+                foreach (int complexity in Weapons.firearms)
+                {
+                    if (complexity == yourWeapon)
+                    {
+                        Console.Write("Firearms ");
+                    }
+                }
+
+                //Fire
+                foreach (int complexity in Weapons.martial)
+                {
+                    if (complexity == yourWeapon)
+                    {
+                        Console.Write("Martial ");
+                    }
+                }
+
+                foreach (int complexity in Weapons.simple)
+                {
+                    if (complexity == yourWeapon)
+                    {
+                        Console.Write("Simple ");
+                    }
+                }
+
+            }
+            Console.Write(Weapons.allWeapons[yourWeapon] + ": " + Weapons.numberOfDice[yourWeapon] + "d" + Weapons.damageDie[yourWeapon]);
+            ///Damage Type
+            {
+                // bludgeoning 
+                foreach (int damageType in Weapons.bludgeoning)
+                {
+                    if (damageType == yourWeapon)
+                    {
+                        Console.Write(" bludgeoning ");
+                    }
+                }
+
+                //Fire
+                foreach (int damageType in Weapons.fire)
+                {
+                    if (damageType == yourWeapon)
+                    {
+                        Console.Write(" fire ");
+                    }
+                }
+
+                //Necrotic
+                foreach (int damageType in Weapons.necrotic)
+                {
+                    if (damageType == yourWeapon)
+                    {
+                        Console.Write(" necrotic ");
+                    }
+                }
+
+                //Piercing
+                foreach (int damageType in Weapons.piercing)
+                {
+                    if (damageType == yourWeapon)
+                    {
+                        Console.Write(" piercing ");
+                    }
+                }
+
+                //Radiant
+                foreach (int damageType in Weapons.radiant)
+                {
+                    if (damageType == yourWeapon)
+                    {
+                        Console.Write(" radiant ");
+                    }
+                }
+
+                //Slashing
+                foreach (int damageType in Weapons.slashing)
+                {
+                    if (damageType == yourWeapon)
+                    {
+                        Console.Write(" slashing ");
+                    }
+                }
+            }
+
+            ///Range
+            {
+                //Ranged
+                {
+                    // bludgeoning 
+                    foreach (int distance in Weapons.ranged)
+                    {
+                        if (distance == yourWeapon)
+                        {
+                            Console.Write("ranged ");
+                        }
+                    }
+
+                    //Fire
+                    foreach (int distance in Weapons.melee)
+                    {
+                        if (distance == yourWeapon)
+                        {
+                            Console.Write("melee ");
+                        }
+                    }
+
+                    Console.Write("damage ");
+                }
+            }
+
+            Console.WriteLine();
+
+            ///Properties
+            {
+                //Ammu
+                foreach (int prop in Weapons.ammunition)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Ammunation ");
+                    }
+                }
+
+                //Burstfire
+                foreach (int prop in Weapons.burstFire)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Burstfire ");
+                    }
+                }
+
+                //Explosive
+                foreach (int prop in Weapons.explosive)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Explosive");
+                    }
+                }
+
+                //Finess
+                foreach (int prop in Weapons.finesse)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Finesse");
+                    }
+                }
+
+                //Heavy
+                foreach (int prop in Weapons.heavy)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Heavy");
+                    }
+                }
+
+                //Light
+                foreach (int prop in Weapons.light)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Light");
+                    }
+                }
+
+                //Loading
+                foreach (int prop in Weapons.loading)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Loading");
+                    }
+                }
+
+                //Misfire
+                foreach (int prop in Weapons.misfire)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Misfire");
+                    }
+                }
+
+                //Reach
+                foreach (int prop in Weapons.reach)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Reach");
+                    }
+                }
+
+                //Reload
+                foreach (int prop in Weapons.reload)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Reaload");
+                    }
+                }
+
+                //Special
+                foreach (int prop in Weapons.special)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Special");
+                    }
+                }
+
+                //Thrown
+                foreach (int prop in Weapons.thrown)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Thrown");
+                    }
+                }
+
+                //Two handed
+                foreach (int prop in Weapons.twoHanded)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Two handed");
+                    }
+                }
+
+                //Versatile
+                foreach (int prop in Weapons.versatile)
+                {
+                    if (prop == yourWeapon)
+                    {
+                        Console.WriteLine("  -Versatile");
+                    }
+                }
+
+
             }
         }
 
@@ -4105,22 +11430,40 @@ namespace Rollespil
             Console.WriteLine();
 
             Console.WriteLine("Type theese buttons to do stuff:");
-            Console.WriteLine("Press |A| to change your AC:");
+            //Attack
+            if (yourWeapon != -1)
+            {
+                Console.WriteLine("Press |A| to Attack:");
+            }
+            Console.WriteLine("Press |C| to enter combat:");
             Console.WriteLine("Press |D| to take damage:");
             Console.WriteLine("Press |F| to gain full health:");
             Console.WriteLine("Press |H| to Heal:");
             Console.WriteLine("Press |L| to Levelup:");
             Console.WriteLine("Press |M| to Change your modifiers:");
             Console.WriteLine("Press |R| to roll a die:");
-            Console.WriteLine("Press |S| to Cast a Spell:");
-            Console.WriteLine("Press |W| to add weapon(s):"); ///
-            Console.WriteLine("Press |Z| to take a rest:");
-
-            //Change your AC (A)
-            if (Exit.Key == ConsoleKey.A)
+            //Spell
+            if (SpeelsOrNot == true)
             {
-                Console.Write("What is your AC: ");
-                AC = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Press |S| to Cast a Spell:");
+            }
+            Console.WriteLine("Press |W| to add weapon(s):");
+            Console.WriteLine("Press |Z| to take a rest:");
+            Console.WriteLine("---------------------------------------");
+
+            //Attack (A)
+            if (yourWeapon > -1)
+            {
+                if (Exit.Key == ConsoleKey.A)
+                {
+                    Attack();
+                }
+            }
+
+            //Combat start
+            if (Exit.Key == ConsoleKey.C)
+            {
+                combat = true;
             }
 
             //Damage (D)
@@ -4178,9 +11521,12 @@ namespace Rollespil
             }
 
             //Spell casting (S)
-            if (Exit.Key == ConsoleKey.S)
+            if (SpeelsOrNot == true)
             {
-                SpellUse();
+                if (Exit.Key == ConsoleKey.S)
+                {
+                    SpellUse();
+                }
             }
 
             //Weapons (W)
@@ -4209,42 +11555,20 @@ namespace Rollespil
 
         }
 
-
         public static void Main(string[] args)
         {
             Essentials();
             Print();
-            Commands();
             do
             {
-                Print();
-
                 if (DeadOrNot == false)
                 {
-                    Commands();
+                    Print();
                 }
 
                 if (DeadOrNot == true)
                 {
                     DeathScreen();
-                    Console.WriteLine("Press |C| for a complete reset, Press |R| for a normal reset:");
-
-                    // Restart with another Character (C)
-                    if (Exit.Key == ConsoleKey.C)
-                    {
-                        DeadOrNot = false;
-                        Spells.Clear();
-                        Console.Clear();
-                        Essentials();
-                        Print();
-                    }
-                    // Reset your Character (R)
-                    if (Exit.Key == ConsoleKey.R)
-                    {
-                        DeadOrNot = false;
-                        Health = MaxHealth;
-                    }
-
                 }
 
                 //EXIT
