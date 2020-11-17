@@ -32,6 +32,7 @@ namespace Rollespil
         public static int SpellcastingAbility = 0;
         public static int SpellSacveDC = 0;
         public static int spellAttackBonus = 0;
+
         public static int Level = 1;
         public static int numberOfSpells = 0;
         public static int NumberOfCantrips = 0;
@@ -44,7 +45,7 @@ namespace Rollespil
         public static int SpellsKnown;
         public static int SpellCounter;
         public static int SpellUsed;
-        public static int change = 1;
+        public static int change = 0;
 
         public static string yourClass = "";
         public static string yesOrNo;
@@ -68,6 +69,7 @@ namespace Rollespil
 
         public static bool rage = false;
         public static int rages;
+        public static int trueRages; 
         public static int rageDamage;
         public static int rageTimer;
         public static int undyingRage;
@@ -231,6 +233,8 @@ namespace Rollespil
                     {
                         rages = 2147483647;
                     }
+
+                    trueRages = rages;
                 }
 
                 //Rage Attack
@@ -3299,140 +3303,117 @@ namespace Rollespil
             {
                 AC = 10 + Convert.ToInt32(Modifier[1] + Modifier[2]);
             }
-        }
 
-        public static void Print()
-        {
-            DamageDone = 0;
-
-            ////////////////
-            Console.Clear();
-            ////////////////
-
-
-            /// Character Print
-
-            ///Name, Class, Health and Level
-            if (name != "Rando")
+            //
             {
-                Console.WriteLine(name + " The " + yourRace + "-" + MagicalClass + " " + "Level: " + Level + "         Health: " + Health + "/" + MaxHealth);
-                Console.WriteLine();
-                Console.WriteLine("Amor class: " + AC + "      Initiative: " + Initiative + "      Speed: " + WalkingSpeed);
-            }
-
-            //Rando
-            if (name == "Rando")
-            {
-                Console.WriteLine(RandoName + " The " + yourRace + "-" + MagicalClass + " " + "Level: " + Level + "         Health: " + Health + "/" + MaxHealth);
-                Console.WriteLine();
-                Console.WriteLine("Amor class: " + AC + "      Initiative: " + Initiative + "      Speed: " + WalkingSpeed);
-            }
-
-            Console.WriteLine();
-
-            //Sorcerer points 
-            {
-                if (SorcererOrNot == true)
+                //Sorcerer points 
                 {
-                    Console.WriteLine("You have " + SorcererPoints + " ready for use");
-                }
-
-                if (SpeelsOrNot == true)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("spellAttackBonus: " + spellAttackBonus + "      " + "Spell Sacve DC: " + SpellSacveDC + "      " + "SpellcastingAbility: " + SpellcastingAbility + "       ");
-                    Console.WriteLine();
-                    if (warlockOrNot == true)
+                    if (SorcererOrNot == true)
                     {
-                        Console.WriteLine("Spell slots: " + spellSlots);
+                        Console.WriteLine("You have " + SorcererPoints + " ready for use");
+                    }
+
+                    if (SpeelsOrNot == true)
+                    {
                         Console.WriteLine();
+                        Console.WriteLine("spellAttackBonus: " + spellAttackBonus + "      " + "Spell Sacve DC: " + SpellSacveDC + "      " + "SpellcastingAbility: " + SpellcastingAbility + "       ");
+                        Console.WriteLine();
+                        if (warlockOrNot == true)
+                        {
+                            Console.WriteLine("Spell slots: " + spellSlots);
+                            Console.WriteLine();
+                        }
                     }
-                }
 
-                if (SorcererOrNot == true)
-                {
-                    Console.WriteLine("You have " + SorcererPoints + " to spend");
-                }
-            }
-
-            //Modifiers
-            foreach (int stat in StatValue)
-            {
-                if (stat > 10)
-                {
-                    atributes = 0;
-                    for (int i = 11; i < stat; i = i + 2)
+                    if (SorcererOrNot == true)
                     {
-                        atributes++;
-                    }
-                }
-                if (stat <= 10)
-                {
-                    atributes = 0;
-                    for (int i = 9; i >= stat; i = i - 2)
-                    {
-                        atributes--;
-
+                        Console.WriteLine("You have " + SorcererPoints + " to spend");
                     }
                 }
 
-                Modifier[counter] = atributes;
-                counter++;
-
-            }
-
-            //Modifiers
-            counter = 0;
-            foreach (string thing in AllThings)
-            {
-                Console.WriteLine(thing + StatValue[counter] + " " + "(" + Modifier[counter] + ")");
-                counter++;
-            }
-
-            //Stats with mods
-            {
-                Console.WriteLine();
-                Console.Write("Proficiency Bonus: " + ProficiencyBonus);
-
-                Console.WriteLine();
+                //Modifiers
                 counter = 0;
-
-                //Saving Throws
-                Console.WriteLine();
-                Console.WriteLine("Saving Throws:");
-
-
-                counter = 0;
-                foreach (string things in AllThings)
+                if (change > 0)
                 {
-                    if (deathSavingProfieciency[counter] == false)
+                    foreach (int stat in StatValue)
                     {
-                        SavingThrows[counter] = Modifier[counter];
-                    }
+                        if (stat > 10)
+                        {
+                            atributes = 0;
+                            for (int i = 11; i < stat; i = i + 2)
+                            {
+                                atributes++;
+                            }
+                        }
+                        if (stat <= 10)
+                        {
+                            atributes = 0;
+                            for (int i = 9; i >= stat; i = i - 2)
+                            {
+                                atributes--;
 
-                    if (deathSavingProfieciency[counter] == true)
-                    {
-                        SavingThrows[counter] = (Modifier[counter] + ProficiencyBonus);
+                            }
+                        }
+
+                        Modifier[counter] = (Modifier[counter] + atributes);
+                        counter++;
 
                     }
-                    counter++;
                 }
-                counter = 0;
 
+
+                //Modifiers
+                counter = 0;
                 foreach (string thing in AllThings)
                 {
-                    Console.WriteLine(thing + SavingThrows[counter]);
+                    Console.WriteLine(thing + StatValue[counter] + " " + "(" + Modifier[counter] + ")");
                     counter++;
                 }
-            }
 
-            //Passive Perception
-            Console.WriteLine();
-            Console.WriteLine("Passive Wisdom (Perception): " + (WisMods[3] + 10));
-            Console.WriteLine();
+                //Stats with mods
+                {
+                    Console.WriteLine();
+                    Console.Write("Proficiency Bonus: " + ProficiencyBonus);
 
-            //Skills Calc
-            {
+                    Console.WriteLine();
+                    counter = 0;
+
+                    //Saving Throws
+                    Console.WriteLine();
+                    Console.WriteLine("Saving Throws:");
+
+
+                    counter = 0;
+                    foreach (string things in AllThings)
+                    {
+                        if (deathSavingProfieciency[counter] == false)
+                        {
+                            SavingThrows[counter] = Modifier[counter];
+                        }
+
+                        if (deathSavingProfieciency[counter] == true)
+                        {
+                            SavingThrows[counter] = (Modifier[counter] + ProficiencyBonus);
+
+                        }
+                        counter++;
+                    }
+                    counter = 0;
+
+                    foreach (string thing in AllThings)
+                    {
+                        Console.WriteLine(thing + SavingThrows[counter]);
+                        counter++;
+                    }
+                }
+
+                //Passive Perception
+                Console.WriteLine();
+                Console.WriteLine("Passive Wisdom (Perception): " + (WisMods[3] + 10));
+                Console.WriteLine();
+
+                //Skills Calc
+                {
                     counter = 0;
                     //Str
                     {
@@ -3525,8 +3506,148 @@ namespace Rollespil
                         }
                     }
 
-                    change = 0;
+                }
+
+
             }
+        }
+
+        public static void Print()
+        {
+            DamageDone = 0;
+
+            ////////////////
+            Console.Clear();
+            ////////////////
+
+
+            /// Character Print
+
+            ///Name, Class, Health and Level
+            if (name != "Rando")
+            {
+                Console.WriteLine(name + " The " + yourRace + "-" + MagicalClass + " " + "Level: " + Level + "         Health: " + Health + "/" + MaxHealth);
+                Console.WriteLine();
+                Console.WriteLine("Amor class: " + AC + "      Initiative: " + Initiative + "      Speed: " + WalkingSpeed);
+            }
+
+            //Rando
+            if (name == "Rando")
+            {
+                Console.WriteLine(RandoName + " The " + yourRace + "-" + MagicalClass + " " + "Level: " + Level + "         Health: " + Health + "/" + MaxHealth);
+                Console.WriteLine();
+                Console.WriteLine("Amor class: " + AC + "      Initiative: " + Initiative + "      Speed: " + WalkingSpeed);
+            }
+
+            Console.WriteLine();
+
+            //Sorcerer points 
+            {
+                if (SorcererOrNot == true)
+                {
+                    Console.WriteLine("You have " + SorcererPoints + " ready for use");
+                }
+
+                if (SpeelsOrNot == true)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("spellAttackBonus: " + spellAttackBonus + "      " + "Spell Sacve DC: " + SpellSacveDC + "      " + "SpellcastingAbility: " + SpellcastingAbility + "       ");
+                    Console.WriteLine();
+                    if (warlockOrNot == true)
+                    {
+                        Console.WriteLine("Spell slots: " + spellSlots);
+                        Console.WriteLine();
+                    }
+                }
+
+                if (SorcererOrNot == true)
+                {
+                    Console.WriteLine("You have " + SorcererPoints + " to spend");
+                }
+            }
+
+            //Modifiers
+            counter = 0;
+            if (change > 0)
+            {
+                foreach (int stat in StatValue)
+                {
+                    if (stat > 10)
+                    {
+                        atributes = 0;
+                        for (int i = 11; i < stat; i = i + 2)
+                        {
+                            atributes++;
+                        }
+                    }
+                    if (stat <= 10)
+                    {
+                        atributes = 0;
+                        for (int i = 9; i >= stat; i = i - 2)
+                        {
+                            atributes--;
+
+                        }
+                    }
+
+                    Modifier[counter] = (Modifier[counter] + atributes);
+                    counter++;
+
+                }
+            }
+
+
+            //Modifiers
+            counter = 0;
+            foreach (string thing in AllThings)
+            {
+                Console.WriteLine(thing + StatValue[counter] + " " + "(" + Modifier[counter] + ")");
+                counter++;
+            }
+
+            //Stats with mods
+            {
+                Console.WriteLine();
+                Console.Write("Proficiency Bonus: " + ProficiencyBonus);
+
+                Console.WriteLine();
+                counter = 0;
+
+                //Saving Throws
+                Console.WriteLine();
+                Console.WriteLine("Saving Throws:");
+
+
+                counter = 0;
+                foreach (string things in AllThings)
+                {
+                    if (deathSavingProfieciency[counter] == false)
+                    {
+                        SavingThrows[counter] = Modifier[counter];
+                    }
+
+                    if (deathSavingProfieciency[counter] == true)
+                    {
+                        SavingThrows[counter] = (Modifier[counter] + ProficiencyBonus);
+
+                    }
+                    counter++;
+                }
+                counter = 0;
+
+                foreach (string thing in AllThings)
+                {
+                    Console.WriteLine(thing + SavingThrows[counter]);
+                    counter++;
+                }
+            }
+
+            //Passive Perception
+            Console.WriteLine();
+            Console.WriteLine("Passive Wisdom (Perception): " + (WisMods[3] + 10));
+            Console.WriteLine();
+
+           
 
             ///Skills print
             {
@@ -3686,6 +3807,8 @@ namespace Rollespil
 
                 }
             }
+
+            change = 0;
         }
 
         public static void SpellUse()
@@ -3737,6 +3860,20 @@ namespace Rollespil
 
                 if (warlockOrNot == true)
                 {
+                    //////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\
+                    foreach (bool  spell in Arcadium )
+                    {
+                        if (spell == true )
+                        {
+                            Console.WriteLine("Do you want to cast an acanum, press |Y| if yes, or |N| for no:");
+                            Exit = Console.ReadKey();
+                            if (Exit .Key == ConsoleKey.Y )
+                            {
+                                Console.WriteLine("What acanum do you want to use, press the number you want:");
+                            }
+                        }
+                    }
+ //                 \\\\\\\\\\\\\\\\\\\\\\\\\\//////////////////////////
                     if (spellSlots > 0)
                     {
                         Console.WriteLine("Is this a concentraition spell, |Yes| or |No|");
@@ -4038,6 +4175,7 @@ namespace Rollespil
 
         public static void LongRest()
         {
+            //Spell reset
             if (warlockOrNot == false)
             {
                 counter = 0;
@@ -4048,15 +4186,27 @@ namespace Rollespil
                 }
             }
 
+            //Warlock
+            {
+                if (warlockOrNot == true)
+                {
+                    spellSlots = trueSpellSlot;
+                }
+            }
+
+            //Bard
+            {
+                if (bardOrNot ==true )
+                {
+                    bardicInspirationLeft = Modifier[5];
+                }
+            }
+
             //Barbarian
             if (barbarianOrNot == true)
             {
                 dyingRage = 10;
-            }
-
-            if (warlockOrNot == true)
-            {
-                spellSlots = trueSpellSlot;
+                rages = trueRages;
             }
         }
 
@@ -4330,6 +4480,7 @@ namespace Rollespil
             Console.WriteLine("|Save| for saving throws");
             Console.Write("// ");
             makeShiftString = Console.ReadLine();
+
             ///Skills
             if (makeShiftString == "Skills" || makeShiftString == "skills" || makeShiftString == "Skill" || makeShiftString == "skill" || makeShiftString == "s" || makeShiftString == "S")
             {
@@ -4448,7 +4599,6 @@ namespace Rollespil
 
                 }
 
-                change = 0;
                 makeShiftString = "";
             }
 
@@ -4524,7 +4674,6 @@ namespace Rollespil
                     counter = 0;
                 }
 
-                change = 0;
                 makeShiftString = "";
             }
 
@@ -4600,11 +4749,9 @@ namespace Rollespil
                     counter = 0;
                 }
 
-                change = 0;
                 makeShiftString = "";
             }
 
-            change = 0;
         }
 
         public static void Combat()
@@ -12608,23 +12755,33 @@ namespace Rollespil
             Console.WriteLine();
 
             Console.WriteLine("Type theese buttons to do stuff:");
-            //Attack
-            if (yourWeapon != -1)
+            //Attack (A)
             {
-                Console.WriteLine("Press |A| to Attack:");
+                if (yourWeapon != -1)
+                {
+                    Console.WriteLine("Press |A| to Attack:");
+                }
             }
-
-            //Combat End
-            if (combat == true)
+            //Bardic inspiration (B)
             {
-                Console.WriteLine("Press |C| to end combat:");
+                if (bardOrNot ==true )
+                {
+                    Console.WriteLine("Press |B| to give a bardic inspiration ("+bardicInspirationLeft +"):");
+                }
             }
-            //Combat Start
-            if (combat == false)
+            ///Combat (C)
             {
-                Console.WriteLine("Press |C| to enter combat and roll initiative:");
+                //Combat End (C)
+                if (combat == true)
+                {
+                    Console.WriteLine("Press |C| to end combat:");
+                }
+                //Combat Start (C)
+                if (combat == false)
+                {
+                    Console.WriteLine("Press |C| to enter combat and roll initiative:");
+                }
             }
-
             Console.WriteLine("Press |D| to take damage:");
             Console.WriteLine("Press |F| to gain full health:");
             Console.WriteLine("Press |G| to grapple:");
@@ -12684,6 +12841,21 @@ namespace Rollespil
                 if (Exit.Key == ConsoleKey.A)
                 {
                     Attack();
+                }
+            }
+
+            //Bardic Inspiration
+            {
+                if (Exit.Key == ConsoleKey.B)
+                {
+                    if (bardOrNot == true)
+                    {
+                        if (bardicInspirationLeft > 0)
+                        {
+                            bardicInspirationLeft--;
+                            Console.WriteLine("You gave " + bardicInspirationDie + " die");
+                        }
+                    }
                 }
             }
 
@@ -12819,6 +12991,8 @@ namespace Rollespil
                 {
                     DeathScreen();
                 }
+
+                Console.ResetColor();
 
                 //EXIT
                 Exit = Console.ReadKey(true);
