@@ -12,7 +12,7 @@ namespace Rollespil.SpellClases
         public static int[] Cantrips = { 1, 2, 4, 7, 9, 10, 14, 15, 19, 21, 22, 33, 34 };
       
         //1
-        public static int[] Level1Spells = { 3, 4, 8, 10, 13, 15, 22, 27, 28, 38, 42, 48, 56, 62, 63 };
+        public static int[] Level1Spells = { 3, 4, 8, 10, 13, 15, 22, 27, 28, 40, 42, 48, 56, 62, 63 };
       
         //2
         public static int[] Level2Spells = { 8, 11, 12, 15, 16, 18, 20, 23, 31, 32, 42, 43, 47, 53, 55, 59, 62 };
