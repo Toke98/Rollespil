@@ -1,5 +1,4 @@
 ﻿using Rollespil.Races; 
-using Rollespil.SpellCalses;
 using Rollespil.SpellClases;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ namespace Rollespil
 {
     public class MainPanel
     {
+        #region infoboard
         ///THE MOST IMPORTENT PIECE OF CODE///
         public static int counter = 0;
         public static bool outOfTheApp = false;
@@ -24,7 +24,7 @@ namespace Rollespil
         public static string makeShiftString = "";
 
         //Character
-
+        #region Character
         public static int ProficiencyBonus = 0;
         public static int Health = 100;
         public static int MaxHealth = 100;
@@ -52,18 +52,29 @@ namespace Rollespil
         public static string name;
         public static string MagicalClass;
         public static string yourRace;
+        #endregion 
 
         //Die and chi stuff
+        #region DieAndStuff
         public static int numberOfSides;
         public static int dieResult;
         public static int numberOfRolls;
         public static int totalDieResult;
+        public static int amountOfRolls;
+
+        public static int carnageDice;
+
+        public static int median;
+        public static int max;
+        public static int min;
         public static bool dieRolledOrNot;
         public static bool advantageOrNot = false;
         public static bool disadvantageOrNot = false;
         public static int advantage;
+        #endregion 
 
         ///Uniques
+        #region Uniques
         //Barbarian
         public static bool barbarianOrNot = false;
 
@@ -82,6 +93,12 @@ namespace Rollespil
         public static int bardicInspirationLeft;
         public static string bardicInspirationDie;
 
+        //Druid
+        public static bool druidOrNot = false;
+        public static int wildShape;
+        public static string maxCr;
+        public static bool shapedOrNot;
+
         //Sorcerer
         public static bool SorcererOrNot = false;
         public static int SorcererPoints;
@@ -90,9 +107,11 @@ namespace Rollespil
         public static bool warlockOrNot = false;
         public static bool[] Arcadium = { false, false, false, false };
         public static string[] Arcanum = { "", "", "", "" };
+        #endregion 
 
 
         ///Combat
+        #region Combat
         public static bool combat = false;
 
         public static int combatCounter;
@@ -101,15 +120,17 @@ namespace Rollespil
         public static int LifeDie;
         public static int DeathCounter;
 
+        public static bool attackedOrNot = false;
         public static bool spellConcentraition = false;
         public static int spellBreak;
         public static int concentraitionCounter;
 
         public static int DeathThreasHold = 0;
-
+        #endregion
 
 
         //Spells
+        #region Spells
         public static int[] levelSpellSlots = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public static int[] trueSpellslots = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public static string YourSpells;
@@ -118,9 +139,10 @@ namespace Rollespil
         public static bool levelUpSpells = false;
 
         public static List<string> Spells = new List<string>();
-
+        #endregion 
 
         ///Weapons
+        #region 
         public static string searchTool;
 
         //Your weapon
@@ -131,9 +153,10 @@ namespace Rollespil
 
         public static bool weaponPro = false;
         public static bool rangedWeapon = false;
-
+        #endregion
 
         //Classes and Races
+        #region Races and classes
         public static string[] Classess = { "Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard" };
         public static int[] HitDice = { 12, 8, 8, 8, 10, 8, 10, 10, 8, 6, 8, 6 };
         public static string[] Races = { "Dwarf", "Elf", "Halfling", "Human", "Dragonborn", "Gnome", "Half-Elf", "Half-Orc", "Tiefling" };
@@ -143,9 +166,10 @@ namespace Rollespil
 
         public static int[] SavingThrows = { 0, 0, 0, 0, 0, 0 };
         public static bool[] deathSavingProfieciency = { false, false, false, false, false, false };
+        #endregion 
 
-
-        //Stats and Skills
+        //Skills
+        #region Spells
         public static string[] AllThings = { "Strength: ", "Dexterity: ", "Constitition: ", "Intelligence: ", "Wisdom: ", "Charisma: " };
         public static int[] StatValue = { 0, 0, 0, 0, 0, 0 };
 
@@ -168,15 +192,17 @@ namespace Rollespil
         public static string[] Cha = { "Deception: ", "Intimidation: ", "Perfermance: ", "Persuasion: " };
         public static int[] ChaMods = { 0, 0, 0, 0 };
         public static bool[] chaProOrNot = { false, false, false, false };
-
+        #endregion
 
         //Modifiers
+        #region Modifiers
         public static int[] Modifier = { 0, 0, 0, 0, 0, 0 };
 
         public static int atributes = 0;
-
+        #endregion 
 
         ///Rando
+        #region Rando
         // A-Z
         public static string[] AZ = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Z" };
 
@@ -192,9 +218,13 @@ namespace Rollespil
         public static string lastName;
 
         public static int nameLetters;
+        #endregion 
+        #endregion
 
-
+        #region  Classes
         //No spell class
+        //      /
+        //    \/
         public static void BarbarianInThisClass()
         {
             barbarianOrNot = true;
@@ -276,6 +306,8 @@ namespace Rollespil
 
         }
 
+        //      /
+        //    \/
         public static void BardInThisClass()
         {
             bardOrNot = true;
@@ -784,6 +816,8 @@ namespace Rollespil
             deathSavingProfieciency[5] = true;
         }
 
+        //      /
+        //    \/
         public static void ClericInThisClass()
         {
             SpellTotal = false;
@@ -798,7 +832,7 @@ namespace Rollespil
                 {
                     if (Level <= 3)
                     {
-                        NumberOfCantrips = 2;
+                        NumberOfCantrips = 3;
                     }
 
                     if (Level > 3 && 10 > Level)
@@ -813,113 +847,122 @@ namespace Rollespil
                 }
 
                 //Spells from Your Level (1'st level spell slot)
-                if (Level < 2)
                 {
-                    levelSpellSlots[0] = 2;
-                }
-                if (Level > 1 && Level < 3)
-                {
-                    levelSpellSlots[0] = 3;
-                }
-                if (Level >= 3)
+                    if (Level < 2)
+                    {
+                        levelSpellSlots[0] = 2;
+                    }
+                    if (Level > 1 && Level < 3)
+                    {
+                        levelSpellSlots[0] = 3;
+                    }
+                    if (Level >= 3)
 
-                {
-                    levelSpellSlots[0] = 4;
+                    {
+                        levelSpellSlots[0] = 4;
+                    }
                 }
-
 
 
                 //Spells from Your Level (2'nd level spell slot)
-                if (Level > 2 && Level < 4)
                 {
-                    levelSpellSlots[1] = 2;
-                }
-                if (Level > 3)
-                {
-                    levelSpellSlots[1] = 3;
+                    if (Level > 2 && Level < 4)
+                    {
+                        levelSpellSlots[1] = 2;
+                    }
+                    if (Level > 3)
+                    {
+                        levelSpellSlots[1] = 3;
 
+                    }
                 }
 
 
                 //Spells from Your Level (3'rd level spell slot)
-                if (Level > 4 && Level < 6)
                 {
-                    levelSpellSlots[2] = 2;
-                }
-                if (Level > 5)
-                {
-                    levelSpellSlots[2] = 3;
+                    if (Level > 4 && Level < 6)
+                    {
+                        levelSpellSlots[2] = 2;
+                    }
+                    if (Level > 5)
+                    {
+                        levelSpellSlots[2] = 3;
 
+                    }
                 }
-
 
                 //Spells from Your Level (4'th level spell slot)
-                if (Level > 6 && Level < 8)
                 {
-                    levelSpellSlots[3] = 1;
+                    if (Level > 6 && Level < 8)
+                    {
+                        levelSpellSlots[3] = 1;
+                    }
+                    if (Level > 7 && Level < 9)
+                    {
+                        levelSpellSlots[3] = 2;
+                    }
+                    if (Level > 8)
+                    {
+                        levelSpellSlots[3] = 3;
+                    }
                 }
-                if (Level > 7 && Level < 9)
-                {
-                    levelSpellSlots[3] = 2;
-                }
-                if (Level > 8)
-                {
-                    levelSpellSlots[3] = 3;
-                }
-
-
-
 
                 //Spells from Your Level (5'th level spell slot)
-                if (Level > 8 && Level < 10)
                 {
-                    levelSpellSlots[4] = 1;
+                    if (Level > 8 && Level < 10)
+                    {
+                        levelSpellSlots[4] = 1;
+                    }
+                    if (Level > 9 && Level < 18)
+                    {
+                        levelSpellSlots[4] = 2;
+                    }
+                    if (Level > 17)
+                    {
+                        levelSpellSlots[4] = 3;
+                    }
                 }
-                if (Level > 9 && Level < 18)
-                {
-                    levelSpellSlots[4] = 2;
-                }
-                if (Level > 17)
-                {
-                    levelSpellSlots[4] = 3;
-                }
-
 
 
                 //Spells from Your Level (6'th level spell slot)
-                if (Level > 10 && Level < 19)
                 {
-                    levelSpellSlots[5] = 1;
+                    if (Level > 10 && Level < 19)
+                    {
+                        levelSpellSlots[5] = 1;
+                    }
+                    if (Level > 18)
+                    {
+                        levelSpellSlots[5] = 2;
+                    }
                 }
-                if (Level > 18)
-                {
-                    levelSpellSlots[5] = 2;
-                }
-
 
                 //Spells from Your Level (7'th level spell slot)
-                if (Level > 13)
                 {
-                    levelSpellSlots[6] = 1;
+                    if (Level > 13)
+                    {
+                        levelSpellSlots[6] = 1;
+                    }
+                    if (Level > 19)
+                    {
+                        levelSpellSlots[6] = 2;
+                    }
                 }
-                if (Level > 19)
-                {
-                    levelSpellSlots[6] = 2;
-                }
-
 
                 //Spells from Your Level (8'th level spell slot)
-                if (Level > 14)
                 {
-                    levelSpellSlots[7] = 1;
-
+                    if (Level > 14)
+                    {
+                        levelSpellSlots[7] = 1;
+                    }
                 }
 
                 //Spells from Your Level (9'th level spell slot)
-                if (Level > 16)
                 {
-                    levelSpellSlots[8] = 1;
+                    if (Level > 16)
+                    {
+                        levelSpellSlots[8] = 1;
 
+                    }
                 }
             }
             //Write your spells
@@ -1109,6 +1152,168 @@ namespace Rollespil
         {
             deathSavingProfieciency[3] = true;
             deathSavingProfieciency[4] = true;
+            SpeelsOrNot = true;
+            druidOrNot = true;
+
+            //Clculate your spells
+            {
+                //Cantrips known
+                {
+                    if (Level <= 3)
+                    {
+                        NumberOfCantrips = 2;
+                    }
+
+                    if (Level > 3 && 10 > Level)
+                    {
+                        NumberOfCantrips = 3;
+                    }
+
+                    if (Level > 9)
+                    {
+                        NumberOfCantrips = 4;
+                    }
+                }
+
+                //Spells from Your Level (1'st level spell slot)
+                {
+                    if (Level < 2)
+                    {
+                        levelSpellSlots[0] = 2;
+                    }
+                    if (Level > 1 && Level < 3)
+                    {
+                        levelSpellSlots[0] = 3;
+                    }
+                    if (Level >= 3)
+
+                    {
+                        levelSpellSlots[0] = 4;
+                    }
+                }
+
+
+                //Spells from Your Level (2'nd level spell slot)
+                {
+                    if (Level > 2 && Level < 4)
+                    {
+                        levelSpellSlots[1] = 2;
+                    }
+                    if (Level > 3)
+                    {
+                        levelSpellSlots[1] = 3;
+
+                    }
+                }
+
+
+                //Spells from Your Level (3'rd level spell slot)
+                {
+                    if (Level > 4 && Level < 6)
+                    {
+                        levelSpellSlots[2] = 2;
+                    }
+                    if (Level > 5)
+                    {
+                        levelSpellSlots[2] = 3;
+
+                    }
+                }
+
+                //Spells from Your Level (4'th level spell slot)
+                {
+                    if (Level > 6 && Level < 8)
+                    {
+                        levelSpellSlots[3] = 1;
+                    }
+                    if (Level > 7 && Level < 9)
+                    {
+                        levelSpellSlots[3] = 2;
+                    }
+                    if (Level > 8)
+                    {
+                        levelSpellSlots[3] = 3;
+                    }
+                }
+
+                //Spells from Your Level (5'th level spell slot)
+                {
+                    if (Level > 8 && Level < 10)
+                    {
+                        levelSpellSlots[4] = 1;
+                    }
+                    if (Level > 9 && Level < 18)
+                    {
+                        levelSpellSlots[4] = 2;
+                    }
+                    if (Level > 17)
+                    {
+                        levelSpellSlots[4] = 3;
+                    }
+                }
+
+
+                //Spells from Your Level (6'th level spell slot)
+                {
+                    if (Level > 10 && Level < 19)
+                    {
+                        levelSpellSlots[5] = 1;
+                    }
+                    if (Level > 18)
+                    {
+                        levelSpellSlots[5] = 2;
+                    }
+                }
+
+                //Spells from Your Level (7'th level spell slot)
+                {
+                    if (Level > 13)
+                    {
+                        levelSpellSlots[6] = 1;
+                    }
+                    if (Level > 19)
+                    {
+                        levelSpellSlots[6] = 2;
+                    }
+                }
+
+                //Spells from Your Level (8'th level spell slot)
+                {
+                    if (Level > 14)
+                    {
+                        levelSpellSlots[7] = 1;
+                    }
+                }
+
+                //Spells from Your Level (9'th level spell slot)
+                {
+                    if (Level > 16)
+                    {
+                        levelSpellSlots[8] = 1;
+
+                    }
+                }
+            }
+
+            //Wild shape
+            {
+                if (Level > 2)
+                {
+                    wildShape = 2;
+                    maxCr = "Max CR 1/4 No flying or swimming speed";
+                }
+
+                if (Level > 3)
+                {
+                    maxCr = "Max CR 1/2 No flying speed";
+                }
+
+                if (Level > 7)
+                {
+                    maxCr = "1";
+                }
+            }
+
         }
 
         //No spell class
@@ -1153,6 +1358,8 @@ namespace Rollespil
             deathSavingProfieciency[1] = true;
         }
 
+        //      /
+        //    \/
         public static void SorcererInThisClass()
         {
             SpeelsOrNot = true;
@@ -1566,6 +1773,8 @@ namespace Rollespil
 
         }
 
+        //      /
+        //    \/
         public static void WarlockInThisClass()
         {
             //Warlock lock
@@ -2286,6 +2495,280 @@ namespace Rollespil
             deathSavingProfieciency[4] = true;
             deathSavingProfieciency[3] = true;
 
+        }
+        #endregion 
+
+        //////REMBER YOUR RESETS\\\\\\
+        public static void Reset()
+        {
+            ///THE MOST IMPORTENT PIECE OF CODE///
+            {
+                counter = 0;
+                outOfTheApp = false;
+                DeadOrNot = false;
+            }
+            //Technecal stuff
+            makeShiftString = "";
+             Console.ForegroundColor = ConsoleColor.Magenta;
+              Console.BackgroundColor = ConsoleColor.Cyan ;
+            Console.ResetColor();
+
+            //Character
+            {
+                ProficiencyBonus = 0;
+                Health = 100;
+                MaxHealth = 100;
+                YourHitDice = 0;
+                SpellcastingAbility = 0;
+                SpellSacveDC = 0;
+                spellAttackBonus = 0;
+
+                Level = 1;
+                numberOfSpells = 0;
+                NumberOfCantrips = 0;
+                newSpells = 0;
+                Initiative = 0;
+                spellSlots = 0;
+                trueSpellSlot = 0;
+                WalkingSpeed = 0;
+                AC = 0;
+                SpellsKnown = 0;
+                SpellCounter = 0;
+                SpellUsed = 0;
+                change = 0;
+
+                yourClass = "";
+                yesOrNo = "";
+                name = "";
+                MagicalClass = "";
+                yourRace = "";
+            }
+
+            //Die and chi stuff
+            {
+                numberOfSides = 0;
+                dieResult = 0;
+                amountOfRolls =0;;
+                numberOfRolls = 0;
+                totalDieResult = 0;
+                median = 0;
+                max = 0;
+                min = 0;
+                carnageDice = 0;
+                advantageOrNot = false;
+                disadvantageOrNot = false;
+                advantageOrNot = false;
+            }
+
+            ///Uniques
+            {
+                //Barbarian
+                {
+                    barbarianOrNot = false;
+
+                    rage = false;
+                    rages = 0;
+                    trueRages = 0;
+                    rageDamage = 0;
+                    rageTimer = 0;
+                    undyingRage = 0;
+                    dyingRage = 10;
+
+                    brutalCrit = 0;
+                }
+
+                //Bard
+                {
+                    bardOrNot = false;
+                    bardicInspirationLeft = 0;
+                    bardicInspirationDie = "";
+                }
+
+                //Druid
+                {
+                    druidOrNot = false;
+                    wildShape = 0;
+                    maxCr = "";
+                    shapedOrNot = false;
+                }
+
+                //Sorcerer
+                {
+                    SorcererOrNot = false;
+                    SorcererPoints = 0;
+                }
+
+                //Warlock
+                {
+                    counter = 0;
+                    warlockOrNot = false;
+
+                    foreach (bool  arc in Arcadium )
+                    {
+                        Arcanum[counter ] = "";
+                        Arcadium[counter] = false;
+                        counter++;
+                    }
+                    counter = 0;
+                }
+            }
+
+            ///Combat
+            {
+                combat = false;
+
+                combatCounter = 0;
+                DamageDone = 0;
+                DeathDie = 0;
+                LifeDie = 0;
+                DeathCounter = 0;
+
+                attackedOrNot = false;
+                spellConcentraition = false;
+                spellBreak = 0;
+                concentraitionCounter = 0;
+
+                DeathThreasHold = 0;
+            }
+
+
+            //Spells
+            {
+                counter = 0;
+                foreach (int slot in levelSpellSlots )
+                {
+                    levelSpellSlots[counter] = 0;
+                    trueSpellslots[counter] = 0;
+                    counter++;
+                }
+
+                YourSpells = "";
+                levelUpSpells = false;
+
+                Spells.Clear();
+                counter = 0;
+            }
+
+            ///Weapons
+            {
+                searchTool = "";
+
+                //Your weapon
+                {
+                    yourWeapon = -1;
+                    weaponDamageDealt = 0;
+                    toHit = 0;
+                    attackRoll = 0;
+
+                    weaponPro = false;
+                    rangedWeapon = false;
+                }
+            }
+
+            //Classes and Races
+            {
+
+                SpeelsOrNot = false;
+                SpellTotal = false;
+
+                counter = 0;
+
+                foreach (int saves in SavingThrows)
+                {
+                    SavingThrows[counter] = 0;
+                    deathSavingProfieciency[counter] = false;
+                    counter++;
+                }
+                counter = 0;
+            }
+
+            //Stats and Skills
+            {
+                // AllThings = { "Strength: ", "Dexterity: ", "Constitition: ", "Intelligence: ", "Wisdom: ", "Charisma: " };
+                counter = 0;
+                foreach (int stats in StatValue )
+                {
+                    StatValue[counter] = 0;
+                    counter++;
+                }
+                counter = 0;
+
+                // Str = "Athletics: ";
+                counter = 0;
+                foreach (int mods in StrMods )
+                {
+                    StrMods[counter] = 0;
+                    strProOrNot[counter] = false;
+                    counter++;
+                }
+                counter = 0;
+
+                // Dex = { "Acrobatics: ", "Sleight of hand: ", "Stealth: " };
+                counter = 0;
+                foreach (int mods in DexMods)
+                {
+                    DexMods[counter] = 0;
+                    dexProOrNot[counter] = false;
+                    counter++;
+                }
+                counter = 0;
+
+                // Int = { "Arcana: ", "History: ", "Investigation: ", "Nature: ", "Religion: " };
+                counter = 0;
+                foreach (int mods in IntMods)
+                {
+                    IntMods[counter] = 0;
+                    IntProOrNot[counter] = false;
+                    counter++;
+                }
+                counter = 0;
+
+                // Wis = { "Animal Handling: ", "Insight: ", "Medicine: ", "Perception: ", "Survival: " };
+                counter = 0;
+                foreach (int mods in WisMods)
+                {
+                    WisMods[counter] = 0;
+                    wisProOrNot[counter] = false;
+                    counter++;
+                }
+                counter = 0;
+
+                // Cha = { "Deception: ", "Intimidation: ", "Perfermance: ", "Persuasion: " };
+                counter = 0;
+                foreach (int mods in ChaMods)
+                {
+                    ChaMods[counter] = 0;
+                    chaProOrNot[counter] = false;
+                    counter++;
+                }
+                counter = 0;
+            }
+
+            //Modifiers
+            {
+                counter = 0;
+                foreach (int mods in Modifier )
+                {
+                    Modifier [counter] = 0;
+                    counter++;
+                }
+                counter = 0;
+
+                atributes = 0;
+            }
+
+            ///Rando
+            {
+                //Stats
+                RandoName = "";
+                firstLetter = "";
+                letter = "";
+                restName = "";
+                firstName = "";
+                lastName = "";
+
+                nameLetters = 0;
+            }
         }
 
         public static void Random()
@@ -3294,6 +3777,7 @@ namespace Rollespil
                 Health = MaxHealth;
                 DeathThreasHold = 0 - MaxHealth;
             }
+
             if (name == RandoName)
             {
                 name = RandoName;
@@ -3514,6 +3998,25 @@ namespace Rollespil
 
         public static void Print()
         {
+            if (rage == true)
+            {
+                Console.Clear();
+                Console.BackgroundColor = ConsoleColor.DarkRed;
+                Console.ForegroundColor = ConsoleColor.Black;
+            } 
+            if (shapedOrNot==true )
+            {
+                Console.Clear();
+                Console.BackgroundColor = ConsoleColor.Green ;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+            }
+            if (combat==false)
+            {
+                combatCounter = 0;
+                Initiative  = 0;
+                concentraitionCounter = 0;
+            }
+
             DamageDone = 0;
 
             ////////////////
@@ -3860,20 +4363,141 @@ namespace Rollespil
 
                 if (warlockOrNot == true)
                 {
-                    //////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\
-                    foreach (bool  spell in Arcadium )
+                    //Arcadiums
                     {
-                        if (spell == true )
+                        counter = 0;
+                        if (Arcadium[0] == true || Arcadium[1] == true || Arcadium[2] == true || Arcadium[3] == true)
                         {
-                            Console.WriteLine("Do you want to cast an acanum, press |Y| if yes, or |N| for no:");
-                            Exit = Console.ReadKey();
-                            if (Exit .Key == ConsoleKey.Y )
+                            Console.WriteLine("Do you want to cast an acanum, |Yes| or |No|:");
+                            Console.Write("// ");
+                            yesOrNo = Console.ReadLine();
+                            if (yesOrNo == "Yes" || yesOrNo == "yes" || yesOrNo == "YES" || yesOrNo == "y" || yesOrNo == "Y")
                             {
-                                Console.WriteLine("What acanum do you want to use, press the number you want:");
+                                Console.WriteLine("What acanum do you want to use, press the number you want: ");
+                                Console.Write("// ");
+                                makeShiftString = Console.ReadLine();
+
+                                if (makeShiftString == "1" || makeShiftString == "6")
+                                {
+                                    Arcadium[0] = false;
+
+                                    spellSlots++;
+                                }
+
+                                if (makeShiftString == "2" || makeShiftString == "7")
+                                {
+                                    Arcadium[1] = false;
+
+                                    spellSlots++;
+                                }
+
+                                if (makeShiftString == "3" || makeShiftString == "8")
+                                {
+                                    Arcadium[2] = false;
+
+                                    spellSlots++;
+                                }
+
+                                if (makeShiftString == "4" || makeShiftString == "9")
+                                {
+                                    Arcadium[3] = false;
+
+                                    spellSlots++;
+                                }
                             }
+                            counter++;
                         }
+
+                        counter = 0;
                     }
- //                 \\\\\\\\\\\\\\\\\\\\\\\\\\//////////////////////////
+
+                    // /|\
+                    // \|/
+                    {
+
+                        //                                           |
+                        //                                          /|\
+                        //                                         //|\\
+                        //                                        ///|\\\
+                        //                                       ////|\\\\
+                        //                                      /////|\\\\\
+                        //                                     //////|\\\\\\
+                        //                                    ///////|\\\\\\\
+                        //                                   ////////|\\\\\\\\
+                        //                                  /////////|\\\\\\\\\
+                        //                                 //////////|\\\\\\\\\\
+                        //                                ///////////|\\\\\\\\\\\
+                        //                               ////////////|\\\\\\\\\\\\
+                        //                              /////////////|\\\\\\\\\\\\\
+                        //                             //////////////|\\\\\\\\\\\\\\
+                        //                            ///////////////|\\\\\\\\\\\\\\\
+                        //                           ////////////////|\\\\\\\\\\\\\\\\
+                        //                          /////////////////|\\\\\\\\\\\\\\\\\
+                        //                         //////////////////|\\\\\\\\\\\\\\\\\\
+                        //                        ///////////////////|\\\\\\\\\\\\\\\\\\\
+                        //                       ////////////////////|\\\\\\\\\\\\\\\\\\\\
+                        //                      /////////////////////|\\\\\\\\\\\\\\\\\\\\\
+                        //                     //////////////////////|\\\\\\\\\\\\\\\\\\\\\\
+                        //                    ///////////////////////|\\\\\\\\\\\\\\\\\\\\\\\ 
+                        //                   ////////////////////////|\\\\\\\\\\\\\\\\\\\\\\\\ 
+                        //                  /////////////////////////|\\\\\\\\\\\\\\\\\\\\\\\\\ 
+                        //                 //////////////////////////|\\\\\\\\\\\\\\\\\\\\\\\\\\                    
+                        //                ////////////////////////// | \\\\\\\\\\\\\\\\\\\\\\\\\\               
+                        //               //////////////////////////  |  \\\\\\\\\\\\\\\\\\\\\\\\\\                   
+                        //              //////////////////////////   |   \\\\\\\\\\\\\\\\\\\\\\\\\\                  
+                        //             //////////////////////////    |    \\\\\\\\\\\\\\\\\\\\\\\\\\                 
+                        //            //////////////////////////     |     \\\\\\\\\\\\\\\\\\\\\\\\\\
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            ||||||||||||||||||||||||||     |     ||||||||||||||||||||||||||
+                        //            \\\\\\\\\\\\\\\\\\\\\\\\\\     |     //////////////////////////
+                        //             \\\\\\\\\\\\\\\\\\\\\\\\\\    |    //////////////////////////
+                        //              \\\\\\\\\\\\\\\\\\\\\\\\\\   |   //////////////////////////
+                        //               \\\\\\\\\\\\\\\\\\\\\\\\\\  |  //////////////////////////
+                        //                \\\\\\\\\\\\\\\\\\\\\\\\\\ | //////////////////////////
+                        //                 \\\\\\\\\\\\\\\\\\\\\\\\\\|//////////////////////////
+                        //                  \\\\\\\\\\\\\\\\\\\\\\\\\|/////////////////////////
+                        //                   \\\\\\\\\\\\\\\\\\\\\\\\|////////////////////////
+                        //                    \\\\\\\\\\\\\\\\\\\\\\\|///////////////////////
+                        //                     \\\\\\\\\\\\\\\\\\\\\\|//////////////////////
+                        //                      \\\\\\\\\\\\\\\\\\\\\|/////////////////////
+                        //                       \\\\\\\\\\\\\\\\\\\\|////////////////////
+                        //                        \\\\\\\\\\\\\\\\\\\|///////////////////
+                        //                         \\\\\\\\\\\\\\\\\\|//////////////////
+                        //                          \\\\\\\\\\\\\\\\\|/////////////////
+                        //                           \\\\\\\\\\\\\\\\|////////////////
+                        //                            \\\\\\\\\\\\\\\|///////////////
+                        //                             \\\\\\\\\\\\\\|//////////////
+                        //                              \\\\\\\\\\\\\|/////////////
+                        //                               \\\\\\\\\\\\|////////////
+                        //                                \\\\\\\\\\\|///////////
+                        //                                 \\\\\\\\\\|//////////
+                        //                                  \\\\\\\\\|/////////
+                        //                                   \\\\\\\\|//////// 
+                        //                                    \\\\\\\|/////// 
+                        //                                     \\\\\\|////// 
+                        //                                      \\\\\|/////
+                        //                                       \\\\|//// 
+                        //                                        \\\|///
+                        //                                         \\|//
+                        //                                          \|/
+                        //                                           |
+                    }
+
+                    //Concentraition
                     if (spellSlots > 0)
                     {
                         Console.WriteLine("Is this a concentraition spell, |Yes| or |No|");
@@ -3927,6 +4551,53 @@ namespace Rollespil
 
                 if (warlockOrNot == true)
                 {
+                    //Arcadiums
+                    {
+                        counter = 0;
+                        if (Arcadium[0] == true || Arcadium[1] == true || Arcadium[2] == true || Arcadium[3] == true)
+                        {
+                            Console.WriteLine("Do you want to cast an acanum, |Yes| or |No|:");
+                            Console.Write("// ");
+                            yesOrNo = Console.ReadLine();
+                            if (yesOrNo == "Yes" || yesOrNo == "yes" || yesOrNo == "YES" || yesOrNo == "y" || yesOrNo == "Y")
+                            {
+                                Console.WriteLine("What acanum do you want to use, press the number you want: ");
+                                Console.Write("// ");
+                                makeShiftString = Console.ReadLine();
+
+                                if (makeShiftString == "1" || makeShiftString == "6")
+                                {
+                                    Arcadium[0] = false;
+
+                                    spellSlots++;
+                                }
+
+                                if (makeShiftString == "2" || makeShiftString == "7")
+                                {
+                                    Arcadium[1] = false;
+
+                                    spellSlots++;
+                                }
+
+                                if (makeShiftString == "3" || makeShiftString == "8")
+                                {
+                                    Arcadium[2] = false;
+
+                                    spellSlots++;
+                                }
+
+                                if (makeShiftString == "4" || makeShiftString == "9")
+                                {
+                                    Arcadium[3] = false;
+
+                                    spellSlots++;
+                                }
+                            }
+                        }
+
+                    }
+
+
                     if (spellSlots > 0)
                     {
                         spellSlots = spellSlots - 1;
@@ -4192,6 +4863,18 @@ namespace Rollespil
                 {
                     spellSlots = trueSpellSlot;
                 }
+
+                counter = 0;
+                foreach (bool spell in Arcadium)
+                {
+                    if (Arcanum[counter] != "")
+                    {
+                        Arcadium[counter] = true;
+                    }
+                    counter++;
+                }
+
+                counter = 0;
             }
 
             //Bard
@@ -4213,6 +4896,7 @@ namespace Rollespil
         public static void Death()
         {
             {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine();
                 Console.WriteLine("                  |||||||||||     ");
                 Console.WriteLine("                |||||||||||||||   ");
@@ -4224,7 +4908,7 @@ namespace Rollespil
                 Console.WriteLine("                || || || || ||    ");
                 Console.WriteLine("                                  ");
                 Console.WriteLine("                || || || || ||    ");
-
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine();
                 Console.WriteLine();
                 Console.WriteLine("YOU ARE DYING");
@@ -4340,7 +5024,9 @@ namespace Rollespil
         public static void DeathScreen()
         {
             Console.Clear();
-
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.Clear();
             Console.WriteLine();
             Console.WriteLine("                  \\\\\\\\        ////   ||||||||||||||||||   ||||          ||||");
             Console.WriteLine("                   \\\\\\\\      ////    ||||||||||||||||||   ||||          ||||");
@@ -4373,46 +5059,13 @@ namespace Rollespil
 
             Console.WriteLine("Press |C| for a complete reset, Press |R| for a normal reset:");
 
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
             // Restart with another Character (C)
             if (Exit.Key == ConsoleKey.C)
             {
-                counter = 0;
-                foreach (bool skills in dexProOrNot)
-                {
-                    dexProOrNot[counter] = false;
-                    counter++;
-                }
-
-                counter = 0;
-                foreach (bool skills in wisProOrNot)
-                {
-                    wisProOrNot[counter] = false;
-                    counter++;
-                }
-
-                counter = 0;
-                foreach (bool skills in IntProOrNot)
-                {
-                    IntProOrNot[counter] = false;
-                    counter++;
-                }
-
-                counter = 0;
-                foreach (bool skills in chaProOrNot)
-                {
-                    chaProOrNot[counter] = false;
-                    counter++;
-                }
-
-                strProOrNot[0] = false;
-
-                barbarianOrNot = false;
-                SorcererOrNot = false;
-                SpeelsOrNot = false;
-                warlockOrNot = false;
-                DeadOrNot = false;
-                Spells.Clear();
                 Console.Clear();
+                Reset();
                 Essentials();
                 Print();
             }
@@ -4422,6 +5075,7 @@ namespace Rollespil
                 DeadOrNot = false;
                 Health = MaxHealth;
             }
+
 
         }
 
@@ -4453,19 +5107,58 @@ namespace Rollespil
             Console.Write("How many dice // ");
             numberOfRolls = Convert.ToInt32(Console.ReadLine());
 
-            numberOfSides++;
+            Console.Write("How many rolls // ");
+            amountOfRolls = Convert.ToInt32(Console.ReadLine());
 
-            for (int i = 0; i < numberOfRolls; i++)
+            numberOfSides++;
+            min = 1000000000;
+            max = 0;
+            median = 0;
+
+            for (int i = 0; i < amountOfRolls; i++)
             {
-                dieResult = rng.Next(1, numberOfSides);
-                totalDieResult = totalDieResult + dieResult;
-                Console.WriteLine(dieResult);
+                for (int p = 0; p < numberOfRolls; p++)
+                {
+                    dieResult = rng.Next(1, numberOfSides);
+                    totalDieResult = totalDieResult + dieResult;
+                    Console.WriteLine(dieResult);
+
+
+                }
+                Console.WriteLine("------------");
+                Console.WriteLine("Total: " + totalDieResult);
+                carnageDice = carnageDice + totalDieResult;
+
+                //Max
+                if (totalDieResult > max)
+                {
+                    max = totalDieResult;
+                }
+
+                //Max
+                if (totalDieResult < min && 0 < totalDieResult)
+                {
+                    min = totalDieResult;
+                }
+
+                totalDieResult = 0;
+                dieRolledOrNot = true;
+                Console.WriteLine();
             }
 
-            Console.WriteLine("----");
-            Console.WriteLine("Total: " + totalDieResult);
-            totalDieResult = 0;
-            dieRolledOrNot = true;
+            //Min, Max, Mid
+            if (amountOfRolls > 1)
+            {
+                median = carnageDice / amountOfRolls;
+                Console.WriteLine("-----------------");
+                Console.WriteLine("Max {" + max + "}");
+                Console.WriteLine("Min {" + min + "}");
+                Console.WriteLine("-----------------");
+                Console.WriteLine("Median {" + median + "}");
+                Console.WriteLine("All: "+carnageDice );
+
+            }
+            carnageDice = 0;
         }
 
         public static void keyNumberManipulator()
@@ -4757,20 +5450,6 @@ namespace Rollespil
         public static void Combat()
         {
             Console.WriteLine();
-            if (Exit.Key == ConsoleKey.Enter)
-            {
-                concentraitionCounter--;
-                combatCounter++;
-
-                if (rages < 1351)
-                {
-                    rageTimer--;
-                    if (rageTimer <= 0)
-                    {
-                        rage = false;
-                    }
-                }
-            }
 
             Console.Write("Turn: " + combatCounter);
             if (concentraitionCounter > 0)
@@ -4782,6 +5461,11 @@ namespace Rollespil
             {
                 Console.Write("            Rage Timer: " + rageTimer);
                 Console.WriteLine();
+                if (DamageDone == 0 || attackedOrNot == false && Level < 14) 
+                {
+                    rageTimer = 0;
+                    rage = false;
+                }
 
             }
 
@@ -4796,9 +5480,10 @@ namespace Rollespil
                     Console.WriteLine("          Initiative: " + Initiative);
                 }
 
-                //Advantage as Barbarian (Level 7)
+                //Barbarian
                 if (barbarianOrNot == true)
                 {
+                    //Advantage as Barbarian
                     if (Level > 6)
                     {
                         if (Initiative == 0)
@@ -4861,6 +5546,22 @@ namespace Rollespil
                         }
                     }
                 }
+            }
+
+            if (Exit.Key == ConsoleKey.Enter)
+            {
+                concentraitionCounter--;
+                combatCounter++;
+
+                if (rages < 1351)
+                {
+                    rageTimer--;
+                    if (rageTimer <= 0)
+                    {
+                        rage = false;
+                    }
+                }
+                attackedOrNot = false;
             }
             Console.WriteLine();
             Console.WriteLine("/////////////////////////////////");
@@ -11051,7 +11752,7 @@ namespace Rollespil
 
                     //Two handed
                     {
-                        if (searchTool == "Two handed")
+                        if (searchTool == "Two handed"|| searchTool == "TwoHanded"|| searchTool == "Twohanded")
                         {
                             foreach (int range in Weapons.twoHanded)
                             {
@@ -11576,6 +12277,7 @@ namespace Rollespil
                 {
                     if (makeShiftString == Convert.ToString(counter))
                     {
+                        counter--;
                         yourWeapon = counter;
                     }
 
@@ -11651,7 +12353,7 @@ namespace Rollespil
                 if (rangedWeapon == false)
                 {
                     //If not a crit
-                    if (attackRoll != 20 && attackRoll != 1)
+                    if (attackRoll != 20 && attackRoll != 1 && rage == false)
                     {
                         for (int i = 0; i < Weapons.numberOfDice[yourWeapon]; i++)
                         {
@@ -11729,7 +12431,7 @@ namespace Rollespil
                     }
 
                     //If normal crit
-                    if (barbarianOrNot == false)
+                    if (barbarianOrNot == false && Level >8)
                     {
                         if (attackRoll == 20)
                         {
@@ -11813,110 +12515,270 @@ namespace Rollespil
                         }
                     }
 
-                    //If brutal crit
-                    if (barbarianOrNot == true && attackRoll == 20)
+                    //Barbarian
                     {
-                        if (brutalCrit == 1)
+                        //If brutal crit
+                        if (barbarianOrNot == true && attackRoll == 20)
                         {
-
-                            for (int i = 0; i < (Weapons.numberOfDice[yourWeapon] * 3); i++)
+                            if (brutalCrit == 1)
                             {
-                                weaponDamageDealt = rng.Next(1, Weapons.damageDie[yourWeapon] + 2) + weaponDamageDealt;
+
+                                for (int i = 0; i < (Weapons.numberOfDice[yourWeapon] * 3); i++)
+                                {
+                                    weaponDamageDealt = rng.Next(1, Weapons.damageDie[yourWeapon] + 2) + weaponDamageDealt;
+                                }
+
+                                if (weaponPro == true)
+                                {
+                                    Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 3) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
+
+                                    Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " + " + ProficiencyBonus + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                                }
+
+                                if (weaponPro == false)
+                                {
+                                    Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 3) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
+
+                                    Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                                }
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+                                Console.Write("damage");
                             }
 
-                            if (weaponPro == true)
+                            if (brutalCrit == 2)
                             {
-                                Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 3) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
 
-                                Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " + " + ProficiencyBonus + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                                for (int i = 0; i < (Weapons.numberOfDice[yourWeapon] * 4); i++)
+                                {
+                                    weaponDamageDealt = rng.Next(1, Weapons.damageDie[yourWeapon] + 3) + weaponDamageDealt;
+                                }
+
+                                if (weaponPro == true)
+                                {
+                                    Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 4) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
+
+                                    Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " + " + ProficiencyBonus + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                                }
+
+                                if (weaponPro == false)
+                                {
+                                    Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 4) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
+
+                                    Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                                }
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+                                Console.Write("damage");
                             }
 
-                            if (weaponPro == false)
+                            if (brutalCrit == 3)
                             {
-                                Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 3) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
 
-                                Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                                for (int i = 0; i < (Weapons.numberOfDice[yourWeapon] * 5); i++)
+                                {
+                                    weaponDamageDealt = rng.Next(1, Weapons.damageDie[yourWeapon] + 4) + weaponDamageDealt;
+                                }
+
+                                if (weaponPro == true)
+                                {
+                                    Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 5) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
+
+                                    Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " + " + ProficiencyBonus + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                                }
+
+                                if (weaponPro == false)
+                                {
+                                    Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 5) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
+
+                                    Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                                }
+
+                                ///Damage Type
+                                {
+                                    // bludgeoning 
+                                    foreach (int damageType in Weapons.bludgeoning)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" bludgeoning ");
+                                        }
+                                    }
+
+                                    //Fire
+                                    foreach (int damageType in Weapons.fire)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" fire ");
+                                        }
+                                    }
+
+                                    //Necrotic
+                                    foreach (int damageType in Weapons.necrotic)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" necrotic ");
+                                        }
+                                    }
+
+                                    //Piercing
+                                    foreach (int damageType in Weapons.piercing)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" piercing ");
+                                        }
+                                    }
+
+                                    //Radiant
+                                    foreach (int damageType in Weapons.radiant)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" radiant ");
+                                        }
+                                    }
+
+                                    //Slashing
+                                    foreach (int damageType in Weapons.slashing)
+                                    {
+                                        if (damageType == yourWeapon)
+                                        {
+                                            Console.Write(" slashing ");
+                                        }
+                                    }
+                                }
+                                Console.Write("damage");
                             }
-
-                            ///Damage Type
-                            {
-                                // bludgeoning 
-                                foreach (int damageType in Weapons.bludgeoning)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" bludgeoning ");
-                                    }
-                                }
-
-                                //Fire
-                                foreach (int damageType in Weapons.fire)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" fire ");
-                                    }
-                                }
-
-                                //Necrotic
-                                foreach (int damageType in Weapons.necrotic)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" necrotic ");
-                                    }
-                                }
-
-                                //Piercing
-                                foreach (int damageType in Weapons.piercing)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" piercing ");
-                                    }
-                                }
-
-                                //Radiant
-                                foreach (int damageType in Weapons.radiant)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" radiant ");
-                                    }
-                                }
-
-                                //Slashing
-                                foreach (int damageType in Weapons.slashing)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" slashing ");
-                                    }
-                                }
-                            }
-                            Console.Write("damage");
                         }
 
-                        if (brutalCrit == 2)
+                        if (attackRoll != 20 && attackRoll != 1 && rage == true)
                         {
-
-                            for (int i = 0; i < (Weapons.numberOfDice[yourWeapon] * 4); i++)
+                            for (int i = 0; i < Weapons.numberOfDice[yourWeapon]; i++)
                             {
-                                weaponDamageDealt = rng.Next(1, Weapons.damageDie[yourWeapon] + 3) + weaponDamageDealt;
-                            }
-
-                            if (weaponPro == true)
-                            {
-                                Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 4) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
-
-                                Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " + " + ProficiencyBonus + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                                weaponDamageDealt = rng.Next(1, Weapons.damageDie[yourWeapon] + 1) + weaponDamageDealt;
                             }
 
                             if (weaponPro == false)
                             {
-                                Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 4) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
+                                Console.Write("You dealt " + Weapons.numberOfDice[yourWeapon] + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt + "||" + weaponDamageDealt + " + " + Modifier[0]+" + " + rageDamage +" = " + (weaponDamageDealt + Modifier[0]+rageDamage ));
+                            }
 
-                                Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
+                            if (weaponPro == true)
+                            {
+                                Console.Write("You dealt " + Weapons.numberOfDice[yourWeapon] + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt + "||" + weaponDamageDealt + " + " + Modifier[0] + " + " + ProficiencyBonus+" + " + rageDamage +" = " + (rageDamage+weaponDamageDealt + Modifier[0] + ProficiencyBonus));
                             }
 
                             ///Damage Type
@@ -11976,90 +12838,9 @@ namespace Rollespil
                                 }
                             }
                             Console.Write("damage");
-                        }
 
-                        if (brutalCrit == 3)
-                        {
-
-                            for (int i = 0; i < (Weapons.numberOfDice[yourWeapon] * 5); i++)
-                            {
-                                weaponDamageDealt = rng.Next(1, Weapons.damageDie[yourWeapon] + 4) + weaponDamageDealt;
-                            }
-
-                            if (weaponPro == true)
-                            {
-                                Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 5) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
-
-                                Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " + " + ProficiencyBonus + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
-                            }
-
-                            if (weaponPro == false)
-                            {
-                                Console.WriteLine("You dealt " + (Weapons.numberOfDice[yourWeapon] * 5) + "d" + Weapons.damageDie[yourWeapon] + " = " + weaponDamageDealt);
-
-                                Console.Write("You dealt " + weaponDamageDealt + " + " + Modifier[0] + " = " + (weaponDamageDealt + Modifier[0] + ProficiencyBonus));
-                            }
-
-                            ///Damage Type
-                            {
-                                // bludgeoning 
-                                foreach (int damageType in Weapons.bludgeoning)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" bludgeoning ");
-                                    }
-                                }
-
-                                //Fire
-                                foreach (int damageType in Weapons.fire)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" fire ");
-                                    }
-                                }
-
-                                //Necrotic
-                                foreach (int damageType in Weapons.necrotic)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" necrotic ");
-                                    }
-                                }
-
-                                //Piercing
-                                foreach (int damageType in Weapons.piercing)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" piercing ");
-                                    }
-                                }
-
-                                //Radiant
-                                foreach (int damageType in Weapons.radiant)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" radiant ");
-                                    }
-                                }
-
-                                //Slashing
-                                foreach (int damageType in Weapons.slashing)
-                                {
-                                    if (damageType == yourWeapon)
-                                    {
-                                        Console.Write(" slashing ");
-                                    }
-                                }
-                            }
-                            Console.Write("damage");
                         }
                     }
-
                     //Flops
                     if (attackRoll == 1)
                     {
@@ -12788,7 +13569,41 @@ namespace Rollespil
             Console.WriteLine("Press |H| to Heal:");
             Console.WriteLine("Press |L| to Levelup:");
             Console.WriteLine("Press |M| to Change your modifiers:");
-            Console.WriteLine("Press |R| to roll a die:");
+            //Wild shape
+            if (druidOrNot == true)
+            {
+                if (wildShape > 0)
+                {
+                    if (shapedOrNot == false)
+                    {
+                        Console.ResetColor();
+                        if (Level < 19)
+                        {
+                            Console.WriteLine("Press |N| to wild shape (" + wildShape +maxCr  +" left):");
+                        }
+
+                        if (Level > 19)
+                        {
+                            Console.WriteLine("Press |N| to wild shape:");
+                        }
+
+                        if (Exit.Key == ConsoleKey.N)
+                        {
+                            shapedOrNot = true;
+                            wildShape--;
+                        }
+                    }
+
+                    if (shapedOrNot == true)
+                    {
+                        Console.WriteLine("Press |E| end wild shape:");
+                        if (Exit.Key == ConsoleKey.E)
+                        {
+                            shapedOrNot = false;
+                        }
+                    }
+                }
+            }
 
             //Rage (P)
             if (barbarianOrNot == true)
@@ -12797,9 +13612,10 @@ namespace Rollespil
                 {
                     if (rage == false)
                     {
+                        Console.ResetColor();
                         if (Level < 19)
                         {
-                            Console.WriteLine("Press |P| to Rage (" + rages + " left) :");
+                            Console.WriteLine("Press |P| to Rage (" + rages + " left):");
                         }
 
                         if (Level > 19)
@@ -12817,7 +13633,7 @@ namespace Rollespil
 
                     if (rage == true)
                     {
-                        Console.WriteLine("Press |E| end Rage:");
+                        Console.WriteLine("Press |E| end Rage (+" + rageDamage + "):");
                         if (Exit.Key == ConsoleKey.E)
                         {
                             rage = false;
@@ -12825,11 +13641,64 @@ namespace Rollespil
                     }
                 }
             }
-
+            Console.WriteLine("Press |R| to roll a die:");
             //Spell (S)
-            if (SpeelsOrNot == true)
             {
-                Console.WriteLine("Press |S| to Cast a Spell:");
+                if (SpeelsOrNot == true && warlockOrNot == false)
+                {
+                    Console.WriteLine("Press |S| to Cast a Spell:");
+                }
+
+                //if warlock spell (S)
+                if (spellSlots > 0 && warlockOrNot == true)
+                {
+                    Console.WriteLine("Press |S| to Cast a Spell (" + spellSlots + ") :");
+
+                    counter = 0;
+                    if (Arcadium[0] == true || Arcadium[1] == true || Arcadium[2] == true || Arcadium[3] == true)
+                    {
+                        for (int i = 0; i < Arcadium.Length; i++)
+                        {
+                            if (Arcadium[counter] == true)
+                            {
+                                if (counter == 0)
+                                {
+                                    Console.Write(" Arcanum: ");
+                                }
+
+                                if (counter == 0)
+                                {
+                                    Console.Write(" (Ready)");
+                                }
+
+                                if (counter != 0)
+                                {
+                                    Console.Write(", (Ready)");
+                                }
+                            }
+
+                            if (Arcadium[counter] == false && Arcanum[counter] != "")
+                            {
+                                if (counter == 0)
+                                {
+                                    Console.Write(" Arcanum: ");
+                                }
+
+                                if (counter == 0)
+                                {
+                                    Console.Write(" (Used)");
+                                }
+
+                                if (counter != 0)
+                                {
+                                    Console.Write(", (Used)");
+                                }
+                            }
+                            counter++;
+                        }
+                        Console.WriteLine();
+                    }
+                }
             }
             Console.WriteLine("Press |W| to add weapon(s):");
             Console.WriteLine("Press |Z| to take a rest:");
@@ -12859,23 +13728,25 @@ namespace Rollespil
                 }
             }
 
-            //Combat start
-            if (combat == false)
+            ///Combat (C)
             {
-                if (Exit.Key == ConsoleKey.C)
+                //Combat start
+                if (combat == false)
                 {
-
-                    combat = true;
+                    if (Exit.Key == ConsoleKey.C)
+                    {
+                        combat = true;
+                    }
                 }
-            }
 
-            //Combat End
-            else if (combat == true)
-            {
-                if (Exit.Key == ConsoleKey.C)
+                //Combat End
+                else if (combat == true)
                 {
-                    Initiative = 0;
-                    combat = false;
+                    if (Exit.Key == ConsoleKey.C)
+                    {
+                        Initiative = 0;
+                        combat = false;
+                    }
                 }
             }
 
@@ -13000,7 +13871,6 @@ namespace Rollespil
                 {
                     outOfTheApp = true;
                 }
-
 
             } while (outOfTheApp == false);
         }
