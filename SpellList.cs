@@ -37,9 +37,9 @@ namespace Rollespil
        
         // 8'th level spells (19)
         public static string[] Level8Spells = { "Abi-Dalzim's Horrid Wilting", "Animal Shapes", "Antimagic Field", "Antipathy/Sympathy", "Clone", "Control Weather", "Demiplane", "Dominate Monster", "Earthquake", "Feeblemind", "Glibness", "Holy Aura", "Incendiary Cloud", "Maze", "Mind Blank", "Power Word Stund", "Sunburst", "Telepathy", "Tsunami" };
-      
-        // 9'th level spells (15)
-        public static string[] Level9Spells = { "Astral Projection", "Foresight", "Gate", "Imprisonment", "Mass Heal", "Power Word Heal", "Power Word Kill", "Prismatic Wall", "Shapechange", "Storm of Vengeance", "Time Stop", "True Polymorph", "True Resurrection", "Weird", "Wish" };
+
+        // 9'th level spells (16)
+        public static string[] Level9Spells = { "Astral Projection", "Foresight", "Gate", "Imprisonment", "Mass Heal", "Meteor Swarm", "Power Word Heal", "Power Word Kill", "Prismatic Wall", "Shapechange", "Storm of Vengeance", "Time Stop", "True Polymorph", "True Resurrection", "Weird", "Wish" };
     
         //Add Classes
         //to the spells
