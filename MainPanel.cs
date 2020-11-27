@@ -18,6 +18,11 @@ namespace Rollespil
         public static Random rng = new Random();
         public static string makeShiftString = "";
 
+
+        //Totally usless mockery
+        public static int idiotCounter;
+
+
         //Character
         #region Character
         public static int ProficiencyBonus = 0;
@@ -2175,6 +2180,11 @@ namespace Rollespil
             makeShiftString = "";
             Console.ResetColor();
 
+            //Totaly useless mockery
+            {
+                idiotCounter = 0;
+            }
+
             //Character
             {
                 ProficiencyBonus = 0;
@@ -3254,7 +3264,7 @@ namespace Rollespil
 
             //If you can shift your spells daily
             {
-                if (dayToDayCaster == true )
+                if (dayToDayCaster == true)
                 {
                     //number of spells you can choose per day
                     numberOfSpells = SpellcastingAbility + Level;
@@ -3298,7 +3308,7 @@ namespace Rollespil
                                     Spells.Add(YourSpells);
                                 }
 
-                                if (YourSpells == "skip" || YourSpells == "Skip" || YourSpells =="")
+                                if (YourSpells == "skip" || YourSpells == "Skip" || YourSpells == "")
                                 {
                                     i = 20000;
                                 }
@@ -4126,7 +4136,7 @@ namespace Rollespil
                 foreach (string thing in AllThings)
                 {
                     Console.Write(thing + StatValue[counter] + " " + "(" + Modifier[counter] + ")");
-                    if (counter == 0||counter==2||counter ==4)
+                    if (counter == 0 || counter == 2 || counter == 4)
                     {
                         Console.Write("  ||  ");
                     }
@@ -4846,6 +4856,80 @@ namespace Rollespil
             counter = 0;
             Health = MaxHealth;
         }
+
+        public static void AttackIdiocy()
+        {
+            if (idiotCounter == 6)
+            {
+                idiotCounter++;
+                DamageDone = 0;
+
+                for (int i = 0; i < 100; i++)
+                {
+                    DamageDone = DamageDone + rng.Next(1, 100);
+                }
+
+                Console.WriteLine("Oh, so you think your tough, huh, well then, you take 100D100 damage");
+                Console.WriteLine("that is " + DamageDone + " good luck");
+
+                ConsoleDamage();
+
+            }
+
+            if (idiotCounter == 5)
+            {
+                idiotCounter++;
+                DamageDone = 0;
+
+                for (int i = 0; i < 10; i++)
+                {
+                    DamageDone = DamageDone + rng.Next(1, 10);
+                }
+
+                Console.WriteLine("OKAY, YOU KNOW WHAT, SCREW YOU, YOU TAKE 10D10 DAMAGE");
+
+                ConsoleDamage();
+            }
+
+            if (idiotCounter == 4)
+            {
+                Console.WriteLine("Okay you know what, you want to make an attack, fine you deal 1 damage to yourself");
+                DamageDone = 1;
+                ConsoleDamage();
+                idiotCounter++;
+            }
+
+            if (idiotCounter == 3)
+            {
+                idiotCounter++;
+                Console.WriteLine("OKAY, YOU STILL DON'T HAVE A WEAPON, WHAT DO YOU WANT FROM ME");
+            }
+
+            if (idiotCounter == 2)
+            {
+                idiotCounter++;
+                Console.WriteLine("OK, in order to get a weapon you need to hit |W|, then you need write in the weapon you want, you can even serch for specific weapons");
+            }
+
+            if (idiotCounter == 1)
+            {
+                idiotCounter++;
+                Console.WriteLine("YOU STILL DON'T HAVE A WEAPON");
+            }
+
+            if (idiotCounter == 0)
+            {
+                idiotCounter++;
+                Console.WriteLine("You don't have a weapon");
+            }
+        }
+
+        public static void ConsoleDamage()
+        {
+            Console.WriteLine();
+            Health = Health - DamageDone;
+        }
+
 
         //Rest
         #region Rest
@@ -5685,126 +5769,126 @@ namespace Rollespil
         #region Weapons and combat
         public static void Combat()
         {
+            Console.WriteLine();
+
+            Console.Write("Turn: " + combatCounter);
+            if (concentraitionCounter > 0)
+            {
+                Console.Write("            Concentraition counter: " + concentraitionCounter);
+            }
+
+            if (rageTimer > 0)
+            {
+                Console.Write("            Rage Timer: " + rageTimer);
                 Console.WriteLine();
-
-                Console.Write("Turn: " + combatCounter);
-                if (concentraitionCounter > 0)
+                if (DamageDone == 0 || attackedOrNot == false && Level < 14)
                 {
-                    Console.Write("            Concentraition counter: " + concentraitionCounter);
+                    rageTimer = 0;
+                    rage = false;
                 }
 
-                if (rageTimer > 0)
+            }
+
+            //Initiative
+            {
+                if (barbarianOrNot == false)
                 {
-                    Console.Write("            Rage Timer: " + rageTimer);
-                    Console.WriteLine();
-                    if (DamageDone == 0 || attackedOrNot == false && Level < 14)
+                    if (Initiative == 0)
                     {
-                        rageTimer = 0;
-                        rage = false;
+                        Initiative = rng.Next(1, 21) + Convert.ToInt32(Modifier[1]);
                     }
-
+                    Console.WriteLine("          Initiative: " + Initiative);
                 }
 
-                //Initiative
+                //Barbarian
+                if (barbarianOrNot == true)
                 {
-                    if (barbarianOrNot == false)
+                    //Advantage as Barbarian
+                    if (Level > 6)
                     {
                         if (Initiative == 0)
                         {
                             Initiative = rng.Next(1, 21) + Convert.ToInt32(Modifier[1]);
+                            advantage = rng.Next(1, 21) + Convert.ToInt32(Modifier[1]);
                         }
-                        Console.WriteLine("          Initiative: " + Initiative);
-                    }
-
-                    //Barbarian
-                    if (barbarianOrNot == true)
-                    {
-                        //Advantage as Barbarian
-                        if (Level > 6)
+                        if (advantage > Initiative)
                         {
-                            if (Initiative == 0)
-                            {
-                                Initiative = rng.Next(1, 21) + Convert.ToInt32(Modifier[1]);
-                                advantage = rng.Next(1, 21) + Convert.ToInt32(Modifier[1]);
-                            }
-                            if (advantage > Initiative)
-                            {
-                                Initiative = advantage;
-                            }
-
-                            Console.WriteLine("          Initiative: " + Initiative + " " + advantage);
+                            Initiative = advantage;
                         }
+
+                        Console.WriteLine("          Initiative: " + Initiative + " " + advantage);
                     }
                 }
+            }
 
-                //Consentraition
-                if (spellConcentraition == true)
+            //Consentraition
+            if (spellConcentraition == true)
+            {
+                if (DamageDone > 0)
                 {
-                    if (DamageDone > 0)
+                    DamageDone = DamageDone / 2;
+                    Console.WriteLine(DamageDone);
+
+                    if (spellConcentraition == true)
                     {
-                        DamageDone = DamageDone / 2;
-                        Console.WriteLine(DamageDone);
-
-                        if (spellConcentraition == true)
+                        if (DamageDone < 10)
                         {
-                            if (DamageDone < 10)
+                            spellBreak = rng.Next(1, 20);
+                            if (spellBreak > 10)
                             {
-                                spellBreak = rng.Next(1, 20);
-                                if (spellBreak > 10)
-                                {
-                                    Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + spellBreak + Convert.ToInt32(SavingThrows[2]));
-                                    Console.WriteLine("You maintain your concentraition");
-                                }
-
-                                if (spellBreak < 10)
-                                {
-                                    Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + (spellBreak + Convert.ToInt32(SavingThrows[2])));
-                                    Console.WriteLine("You lose your concentraition");
-                                    concentraitionCounter = 0;
-                                }
+                                Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + spellBreak + Convert.ToInt32(SavingThrows[2]));
+                                Console.WriteLine("You maintain your concentraition");
                             }
 
-                            if (DamageDone > 10)
+                            if (spellBreak < 10)
                             {
-                                spellBreak = rng.Next(1, 20);
-                                if (spellBreak > DamageDone)
-                                {
-                                    Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + spellBreak + Convert.ToInt32(SavingThrows[2]));
-                                    Console.WriteLine("You maintain your concentraition");
-                                }
+                                Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + (spellBreak + Convert.ToInt32(SavingThrows[2])));
+                                Console.WriteLine("You lose your concentraition");
+                                concentraitionCounter = 0;
+                            }
+                        }
 
-                                if (spellBreak < DamageDone)
-                                {
-                                    Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + spellBreak + Convert.ToInt32(SavingThrows[2]));
-                                    Console.WriteLine("You lose your concentraition");
-                                    concentraitionCounter = 0;
-                                }
+                        if (DamageDone > 10)
+                        {
+                            spellBreak = rng.Next(1, 20);
+                            if (spellBreak > DamageDone)
+                            {
+                                Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + spellBreak + Convert.ToInt32(SavingThrows[2]));
+                                Console.WriteLine("You maintain your concentraition");
+                            }
+
+                            if (spellBreak < DamageDone)
+                            {
+                                Console.WriteLine("Constitution saving throw: " + spellBreak + " + " + Convert.ToInt32(SavingThrows[2]) + " = " + spellBreak + Convert.ToInt32(SavingThrows[2]));
+                                Console.WriteLine("You lose your concentraition");
+                                concentraitionCounter = 0;
                             }
                         }
                     }
                 }
+            }
 
-                //advance turn
-                if (Exit.Key == ConsoleKey.Enter)
+            //advance turn
+            if (Exit.Key == ConsoleKey.Enter)
+            {
+                concentraitionCounter--;
+                combatCounter++;
+
+                if (rages < 1351)
                 {
-                    concentraitionCounter--;
-                    combatCounter++;
-
-                    if (rages < 1351)
+                    rageTimer--;
+                    if (rageTimer <= 0)
                     {
-                        rageTimer--;
-                        if (rageTimer <= 0)
-                        {
-                            rage = false;
-                        }
+                        rage = false;
                     }
-                    attackedOrNot = false;
                 }
-                Console.WriteLine();
-                Console.WriteLine("/////////////////////////////////");
-                Console.WriteLine("Hit |Enter| to advance the round");
-                Console.WriteLine("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
-                Console.WriteLine();
+                attackedOrNot = false;
+            }
+            Console.WriteLine();
+            Console.WriteLine("/////////////////////////////////");
+            Console.WriteLine("Hit |Enter| to advance the round");
+            Console.WriteLine("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+            Console.WriteLine();
         }
 
         //Carefull a lot of stuff is going on here...
@@ -12557,7 +12641,7 @@ namespace Rollespil
                             weaponPro.Add(true);
                         }
 
-                        if (yesOrNo =="n"||yesOrNo =="N"||yesOrNo =="NO"||yesOrNo == "No"||yesOrNo =="no"|| yesOrNo =="")
+                        if (yesOrNo == "n" || yesOrNo == "N" || yesOrNo == "NO" || yesOrNo == "No" || yesOrNo == "no" || yesOrNo == "")
                         {
                             weaponPro.Add(false);
                         }
@@ -13556,357 +13640,365 @@ namespace Rollespil
 
         public static void Commands()
         {
-            if (DeadOrNot == false)
+            Console.WriteLine();
+            Console.WriteLine("---------------------------------------");
+            Console.WriteLine();
+
+            Console.WriteLine("Type theese buttons to do stuff:");
+            //Attack (A)
             {
-                Console.WriteLine();
-                Console.WriteLine("---------------------------------------");
-                Console.WriteLine();
-
-                Console.WriteLine("Type theese buttons to do stuff:");
-                //Attack (A)
+                if (weaponCounter > 0)
                 {
-                    if (weaponCounter > 0)
-                    {
-                        Console.WriteLine("Press |A| to Attack:");
-                    }
+                    Console.WriteLine("Press |A| to Attack:");
                 }
-                //Bardic inspiration (B)
+            }
+            //Bardic inspiration (B)
+            {
+                if (bardOrNot == true)
                 {
-                    if (bardOrNot == true)
-                    {
-                        Console.WriteLine("Press |B| to give a bardic inspiration (" + bardicInspirationLeft + "):");
-                    }
+                    Console.WriteLine("Press |B| to give a bardic inspiration (" + bardicInspirationLeft + "):");
                 }
-                ///Combat (C)
+            }
+            ///Combat (C)
+            {
+                //Combat End (C)
+                if (combat == true)
                 {
-                    //Combat End (C)
-                    if (combat == true)
-                    {
-                        Console.WriteLine("Press |C| to end combat:");
-                    }
-                    //Combat Start (C)
-                    if (combat == false)
-                    {
-                        Console.WriteLine("Press |C| to enter combat and roll initiative:");
-                    }
+                    Console.WriteLine("Press |C| to end combat:");
                 }
-                Console.WriteLine("Press |D| to take damage:");
-                //Exchange spells (E)
+                //Combat Start (C)
+                if (combat == false)
                 {
-                    if (dayToDayCaster == true)
-                    {
-                        Console.WriteLine("Press |E| to exchange spells:");
-                    }
+                    Console.WriteLine("Press |C| to enter combat and roll initiative:");
                 }
-                Console.WriteLine("Press |F| to gain full health:");
-                Console.WriteLine("Press |G| to grapple:");
-                Console.WriteLine("Press |H| to Heal:");
-                Console.WriteLine("Press |L| to Levelup:");
-                Console.WriteLine("Press |M| to Change your modifiers:");
-                //Wild shape
-                if (druidOrNot == true)
+            }
+            Console.WriteLine("Press |D| to take damage:");
+            //Exchange spells (E)
+            {
+                if (dayToDayCaster == true)
                 {
-                    if (wildShape > 0)
+                    Console.WriteLine("Press |E| to exchange spells:");
+                }
+            }
+            Console.WriteLine("Press |F| to gain full health:");
+            Console.WriteLine("Press |G| to grapple:");
+            Console.WriteLine("Press |H| to Heal:");
+            Console.WriteLine("Press |L| to Levelup:");
+            Console.WriteLine("Press |M| to Change your modifiers:");
+            //Wild shape
+            if (druidOrNot == true)
+            {
+                if (wildShape > 0)
+                {
+                    if (shapedOrNot == false)
                     {
-                        if (shapedOrNot == false)
+                        Console.ResetColor();
+                        if (Level < 19)
                         {
-                            Console.ResetColor();
-                            if (Level < 19)
-                            {
-                                Console.WriteLine("Press |N| to wild shape (" + wildShape + " left); " + maxCr);
-                            }
-
-                            if (Level > 19)
-                            {
-                                Console.WriteLine("Press |N| to wild shape:");
-                            }
-
-                            if (Exit.Key == ConsoleKey.N)
-                            {
-                                shapedOrNot = true;
-                                wildShape--;
-                            }
+                            Console.WriteLine("Press |N| to wild shape (" + wildShape + " left); " + maxCr);
                         }
 
-                        if (shapedOrNot == true)
+                        if (Level > 19)
                         {
-                            Console.WriteLine("Press |E| end wild shape:");
-                            if (Exit.Key == ConsoleKey.E)
-                            {
-                                shapedOrNot = false;
-                            }
+                            Console.WriteLine("Press |N| to wild shape:");
+                        }
+
+                        if (Exit.Key == ConsoleKey.N)
+                        {
+                            shapedOrNot = true;
+                            wildShape--;
+                        }
+                    }
+
+                    if (shapedOrNot == true)
+                    {
+                        Console.WriteLine("Press |E| end wild shape:");
+                        if (Exit.Key == ConsoleKey.E)
+                        {
+                            shapedOrNot = false;
                         }
                     }
                 }
+            }
 
-                //Rage (P)
-                if (barbarianOrNot == true)
+            //Rage (P)
+            if (barbarianOrNot == true)
+            {
+                if (rages > 0)
                 {
-                    if (rages > 0)
+                    if (rage == false)
                     {
-                        if (rage == false)
+                        Console.ResetColor();
+                        if (Level < 19)
                         {
-                            Console.ResetColor();
-                            if (Level < 19)
-                            {
-                                Console.WriteLine("Press |P| to Rage (" + rages + " left):");
-                            }
-
-                            if (Level > 19)
-                            {
-                                Console.WriteLine("Press |P| to Rage:");
-                            }
-
-                            if (Exit.Key == ConsoleKey.P)
-                            {
-                                rage = true;
-                                rages--;
-                                rageTimer = 10;
-                            }
+                            Console.WriteLine("Press |P| to Rage (" + rages + " left):");
                         }
 
-                        if (rage == true)
+                        if (Level > 19)
                         {
-                            Console.WriteLine("Press |E| end Rage (+" + rageDamage + "):");
-                            if (Exit.Key == ConsoleKey.E)
-                            {
-                                rage = false;
-                            }
+                            Console.WriteLine("Press |P| to Rage:");
+                        }
+
+                        if (Exit.Key == ConsoleKey.P)
+                        {
+                            rage = true;
+                            rages--;
+                            rageTimer = 10;
+                        }
+                    }
+
+                    if (rage == true)
+                    {
+                        Console.WriteLine("Press |E| end Rage (+" + rageDamage + "):");
+                        if (Exit.Key == ConsoleKey.E)
+                        {
+                            rage = false;
                         }
                     }
                 }
-                Console.WriteLine("Press |R| to roll a die:");
-                //Spell (S)
+            }
+            Console.WriteLine("Press |R| to roll a die:");
+            //Spell (S)
+            {
+                if (SpeelsOrNot == true && warlockOrNot == false)
                 {
-                    if (SpeelsOrNot == true && warlockOrNot == false)
-                    {
-                        Console.WriteLine("Press |S| to Cast a Spell:");
-                    }
+                    Console.WriteLine("Press |S| to Cast a Spell:");
+                }
 
-                    //if warlock spell (S)
-                    if (spellSlots > 0 && warlockOrNot == true)
-                    {
-                        Console.WriteLine("Press |S| to Cast a Spell (" + spellSlots + ") :");
+                //if warlock spell (S)
+                if (spellSlots > 0 && warlockOrNot == true)
+                {
+                    Console.WriteLine("Press |S| to Cast a Spell (" + spellSlots + ") :");
 
-                        counter = 0;
-                        if (Arcadium[0] == true || Arcadium[1] == true || Arcadium[2] == true || Arcadium[3] == true)
+                    counter = 0;
+                    if (Arcadium[0] == true || Arcadium[1] == true || Arcadium[2] == true || Arcadium[3] == true)
+                    {
+                        for (int i = 0; i < Arcadium.Length; i++)
                         {
-                            for (int i = 0; i < Arcadium.Length; i++)
+                            if (Arcadium[counter] == true)
                             {
-                                if (Arcadium[counter] == true)
+                                if (counter == 0)
                                 {
-                                    if (counter == 0)
-                                    {
-                                        Console.Write(" Arcanum: ");
-                                    }
-
-                                    if (counter == 0)
-                                    {
-                                        Console.Write(" (Ready)");
-                                    }
-
-                                    if (counter != 0)
-                                    {
-                                        Console.Write(", (Ready)");
-                                    }
+                                    Console.Write(" Arcanum: ");
                                 }
 
-                                if (Arcadium[counter] == false && Arcanum[counter] != "")
+                                if (counter == 0)
                                 {
-                                    if (counter == 0)
-                                    {
-                                        Console.Write(" Arcanum: ");
-                                    }
-
-                                    if (counter == 0)
-                                    {
-                                        Console.Write(" (Used)");
-                                    }
-
-                                    if (counter != 0)
-                                    {
-                                        Console.Write(", (Used)");
-                                    }
+                                    Console.Write(" (Ready)");
                                 }
-                                counter++;
+
+                                if (counter != 0)
+                                {
+                                    Console.Write(", (Ready)");
+                                }
                             }
-                            Console.WriteLine();
+
+                            if (Arcadium[counter] == false && Arcanum[counter] != "")
+                            {
+                                if (counter == 0)
+                                {
+                                    Console.Write(" Arcanum: ");
+                                }
+
+                                if (counter == 0)
+                                {
+                                    Console.Write(" (Used)");
+                                }
+
+                                if (counter != 0)
+                                {
+                                    Console.Write(", (Used)");
+                                }
+                            }
+                            counter++;
                         }
+                        Console.WriteLine();
                     }
                 }
-                Console.WriteLine("Press |W| to add weapon(s):");
-                Console.WriteLine("Press |Z| to take a rest:");
-                Console.WriteLine("---------------------------------------");
+            }
+            Console.WriteLine("Press |W| to add weapon(s):");
+            Console.WriteLine("Press |Z| to take a rest:");
+            Console.WriteLine("---------------------------------------");
 
-                //Attack (A)
+            //Attack (A)
+            {
                 if (weaponCounter > 0)
                 {
                     if (Exit.Key == ConsoleKey.A)
                     {
                         Attack();
                     }
+
                 }
 
-                //Bardic Inspiration
+                if (weaponCounter == 0)
                 {
-                    if (Exit.Key == ConsoleKey.B)
+                        AttackIdiocy();
+                }
+            }
+
+
+
+
+            //Bardic Inspiration
+            {
+                if (Exit.Key == ConsoleKey.B)
+                {
+                    if (bardOrNot == true)
                     {
-                        if (bardOrNot == true)
+                        if (bardicInspirationLeft > 0)
                         {
-                            if (bardicInspirationLeft > 0)
-                            {
-                                bardicInspirationLeft--;
-                                Console.WriteLine("You gave " + bardicInspirationDie + " die");
-                            }
+                            bardicInspirationLeft--;
+                            Console.WriteLine("You gave " + bardicInspirationDie + " die");
                         }
                     }
                 }
+            }
 
-                ///Combat (C)
+            ///Combat (C)
+            {
+                //Combat start
+                if (combat == false)
                 {
-                    //Combat start
-                    if (combat == false)
+                    if (Exit.Key == ConsoleKey.C)
                     {
-                        if (Exit.Key == ConsoleKey.C)
-                        {
-                            combat = true;
-                        }
-                    }
-
-                    //Combat End
-                    else if (combat == true)
-                    {
-                        if (Exit.Key == ConsoleKey.C)
-                        {
-                            Initiative = 0;
-                            combat = false;
-                        }
+                        combat = true;
                     }
                 }
 
-                //Damage (D)
-                if (Exit.Key == ConsoleKey.D)
+                //Combat End
+                else if (combat == true)
                 {
-                    Console.WriteLine();
-                    Console.Write("// ");
-                    DamageDone = Convert.ToInt32(Console.ReadLine());
-                    Health = Health - DamageDone;
-
-                }
-
-                //Exchange spells (E)
-                if (dayToDayCaster == true)
-                {
-                    if (Exit.Key == ConsoleKey.E)
+                    if (Exit.Key == ConsoleKey.C)
                     {
-                        AddSpells();
+                        Initiative = 0;
+                        combat = false;
                     }
                 }
+            }
 
-                //Full health (F)
-                if (Exit.Key == ConsoleKey.F)
-                {
-                    Console.WriteLine();
-                    Health = MaxHealth;
-
-                }
-
-                //Grapple (G)
-                if (Exit.Key == ConsoleKey.G)
-                {
-                    Console.WriteLine(Str + (StrMods[0] + rng.Next(0, 21)));
-                    Health = MaxHealth;
-
-                }
-
-                //Heal (H)
-                if (Exit.Key == ConsoleKey.H)
-                {
-                    Console.WriteLine();
-                    Console.Write("// ");
-                    DamageDone = Convert.ToInt32(Console.ReadLine());
-                    Health = Health + DamageDone;
-
-                }
-
-                // Level UP (L)
-                if (Exit.Key == ConsoleKey.L)
-                {
-                    Level = Level + 1;
-                    Console.WriteLine("Are you sure you want to level up? (Y for yes or write N for no) ");
-                    Console.WriteLine("// ");
-                    yesOrNo = Console.ReadLine();
-
-                    if (yesOrNo == "y" || yesOrNo == "Y" || yesOrNo == "yes" || yesOrNo == "Yes" || yesOrNo == "YES")
-                    {
-                        LevelUp();
-                    }
-                }
-
-                //Mod change (M)
-                if (Exit.Key == ConsoleKey.M)
-                {
-                    keyNumberManipulator();
-                }
-
-                //Roll die (R)
-                if (Exit.Key == ConsoleKey.R)
-                {
-                    rollDie();
-                }
-
-                //Spell casting (S)
-                if (SpeelsOrNot == true)
-                {
-                    if (Exit.Key == ConsoleKey.S)
-                    {
-                        SpellUse();
-                    }
-                }
-
-                //Weapons (W)
-                if (Exit.Key == ConsoleKey.W)
-                {
-                    weaponShop();
-                }
-
-                //Rest (Z)
-                if (Exit.Key == ConsoleKey.Z)
-                {
-                    Console.Write("Do you want to take a |Short| or |Long| rest: // ");
-                    makeShiftString = Console.ReadLine();
-
-                    if (makeShiftString == "Long" || makeShiftString == "long")
-                    {
-                        LongRest();
-                        makeShiftString = "";
-                    }
-
-                    if (makeShiftString == "Short" || makeShiftString == "short")
-                    {
-                        ShotRest();
-                        makeShiftString = "";
-                    }
-                }
+            //Damage (D)
+            if (Exit.Key == ConsoleKey.D)
+            {
+                Console.WriteLine();
+                Console.Write("// ");
+                DamageDone = Convert.ToInt32(Console.ReadLine());
+                Health = Health - DamageDone;
 
             }
+
+            //Exchange spells (E)
+            if (dayToDayCaster == true)
+            {
+                if (Exit.Key == ConsoleKey.E)
+                {
+                    AddSpells();
+                }
+            }
+
+            //Full health (F)
+            if (Exit.Key == ConsoleKey.F)
+            {
+                Console.WriteLine();
+                Health = MaxHealth;
+
+            }
+
+            //Grapple (G)
+            if (Exit.Key == ConsoleKey.G)
+            {
+                Console.WriteLine(Str + (StrMods[0] + rng.Next(0, 21)));
+                Health = MaxHealth;
+
+            }
+
+            //Heal (H)
+            if (Exit.Key == ConsoleKey.H)
+            {
+                Console.WriteLine();
+                Console.Write("// ");
+                DamageDone = Convert.ToInt32(Console.ReadLine());
+                Health = Health + DamageDone;
+
+            }
+
+            // Level UP (L)
+            if (Exit.Key == ConsoleKey.L)
+            {
+                Level = Level + 1;
+                Console.WriteLine("Are you sure you want to level up? (Y for yes or write N for no) ");
+                Console.WriteLine("// ");
+                yesOrNo = Console.ReadLine();
+
+                if (yesOrNo == "y" || yesOrNo == "Y" || yesOrNo == "yes" || yesOrNo == "Yes" || yesOrNo == "YES")
+                {
+                    LevelUp();
+                }
+            }
+
+            //Mod change (M)
+            if (Exit.Key == ConsoleKey.M)
+            {
+                keyNumberManipulator();
+            }
+
+            //Roll die (R)
+            if (Exit.Key == ConsoleKey.R)
+            {
+                rollDie();
+            }
+
+            //Spell casting (S)
+            if (SpeelsOrNot == true)
+            {
+                if (Exit.Key == ConsoleKey.S)
+                {
+                    SpellUse();
+                }
+            }
+
+            //Weapons (W)
+            if (Exit.Key == ConsoleKey.W)
+            {
+                weaponShop();
+            }
+
+            //Rest (Z)
+            if (Exit.Key == ConsoleKey.Z)
+            {
+                Console.Write("Do you want to take a |Short| or |Long| rest: // ");
+                makeShiftString = Console.ReadLine();
+
+                if (makeShiftString == "Long" || makeShiftString == "long")
+                {
+                    LongRest();
+                    makeShiftString = "";
+                }
+
+                if (makeShiftString == "Short" || makeShiftString == "short")
+                {
+                    ShotRest();
+                    makeShiftString = "";
+                }
+            }
+
         }
 
         public static void Main(string[] args)
         {
-           
+
             Essentials();
             Print();
             do
             {
-                if (DeadOrNot == false)
-                {
-                    Print();
-                }
-
                 if (DeadOrNot == true)
                 {
                     DeathScreen();
+                }
+
+                if (DeadOrNot == false)
+                {
+                    Print();
                 }
 
                 Console.ResetColor();
